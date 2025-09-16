@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const FeaturesSection = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
   const features = [
     {
       icon: (
@@ -44,13 +46,35 @@ const FeaturesSection = () => {
     }
   ];
 
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % features.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + features.length) % features.length);
+  };
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
+
+  // Auto-play functionality
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % features.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [features.length]);
+
   return (
     <section id="features" className="py-20 section-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="heading-secondary mb-4">
-            Powerful Features for Modern Agriculture
+          <p className="text-sm text-[#2E7D44] font-medium mb-2">POWERFUL FEATURES</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-[#212121] mb-4">
+            Modern Agriculture
           </h2>
           <p className="text-body max-w-3xl mx-auto">
             Our comprehensive platform combines cutting-edge AI technology with deep agricultural expertise 
@@ -58,60 +82,91 @@ const FeaturesSection = () => {
           </p>
         </div>
 
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
-            <div key={index} className="feature-card group">
-              <div className="mb-6 flex justify-center">
-                <div className="p-4 bg-gray-50 rounded-full group-hover:bg-[#2E7D44]/10 transition-colors duration-300">
-                  {feature.icon}
-                </div>
-              </div>
-              
-              <h3 className="heading-tertiary mb-4 text-[#212121]">
-                {feature.title}
-              </h3>
-              
-              <p className="text-body mb-6">
-                {feature.description}
-              </p>
-              
-              <ul className="space-y-2">
-                {feature.benefits.map((benefit, benefitIndex) => (
-                  <li key={benefitIndex} className="flex items-center text-sm text-[#757575]">
-                    <svg className="w-4 h-4 text-[#4CAF50] mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                    </svg>
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        {/* Carousel Container */}
+        <div className="relative">
+          {/* Navigation Arrows */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-3 transition-all duration-300 hover:scale-110"
+            aria-label="Previous feature"
+          >
+            <svg className="w-6 h-6 text-[#2E7D44]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          
+          <button
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-3 transition-all duration-300 hover:scale-110"
+            aria-label="Next feature"
+          >
+            <svg className="w-6 h-6 text-[#2E7D44]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
 
-        {/* Additional Features Banner */}
-        <div className="mt-16 bg-gradient-to-r from-[#2E7D44] to-[#4CAF50] rounded-2xl p-8 text-white text-center">
-          <h3 className="text-2xl font-bold mb-4">And Much More...</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="flex flex-col items-center">
-              <div className="text-3xl mb-2">📱</div>
-              <span className="text-sm">Mobile App</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="text-3xl mb-2">🌐</div>
-              <span className="text-sm">WhatsApp Integration</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="text-3xl mb-2">📞</div>
-              <span className="text-sm">IVR Support</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="text-3xl mb-2">☁️</div>
-              <span className="text-sm">Cloud Sync</span>
+          {/* Carousel */}
+          <div className="overflow-hidden">
+            <div 
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
+              {features.map((feature, index) => (
+                <div key={index} className="w-full flex-shrink-0 px-8">
+                  <div className="max-w-4xl mx-auto">
+                    <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-8 md:p-12 text-center hover:shadow-2xl transition-all duration-300">
+                      {/* Icon */}
+                      <div className="mb-8 flex justify-center">
+                        <div className="p-6 bg-gradient-to-br from-[#2E7D44]/10 to-[#4CAF50]/10 rounded-full">
+                          {feature.icon}
+                        </div>
+                      </div>
+                      
+                      {/* Title */}
+                      <h3 className="text-3xl md:text-4xl font-bold text-[#212121] mb-6">
+                        {feature.title}
+                      </h3>
+                      
+                      {/* Description */}
+                      <p className="text-lg text-gray-600 leading-relaxed mb-8 max-w-2xl mx-auto">
+                        {feature.description}
+                      </p>
+                      
+                      {/* Benefits */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+                        {feature.benefits.map((benefit, benefitIndex) => (
+                          <div key={benefitIndex} className="flex items-center justify-center space-x-2 bg-[#F8FDF8] rounded-lg p-3">
+                            <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                            </svg>
+                            <span className="text-sm font-medium text-[#2E7D44]">{benefit}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
+
+          {/* Pagination Dots */}
+          <div className="flex justify-center mt-8 space-x-3">
+            {features.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`transition-all duration-300 ${
+                  index === currentSlide
+                    ? 'w-8 h-3 bg-[#2E7D44] rounded-full'
+                    : 'w-3 h-3 bg-[#2E7D44]/30 rounded-full hover:bg-[#2E7D44]/50'
+                }`}
+                aria-label={`Go to feature ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
+
       </div>
     </section>
   );
