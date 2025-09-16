@@ -1,27 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 @import "tailwindcss";
 
-/* Custom styles for testing Tailwind CSS */
+/* Farm-Connect Agricultural Theme */
 @layer base {
   body {
     @apply font-sans antialiased;
+    font-family: 'Roboto', sans-serif;
+    background-color: #F8FDF8;
+  }
+  
+  html {
+    background-color: #F8FDF8;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', sans-serif;
   }
 }
 
 @layer components {
+  /* Agricultural Color Palette */
   .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-[#2E7D44] hover:bg-[#1e5a2f] text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+    min-height: 44px;
   }
   
   .btn-secondary {
-    @apply bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-transparent border-2 border-[#2E7D44] text-[#2E7D44] hover:bg-[#2E7D44] hover:text-white font-medium py-3 px-6 rounded-lg transition-all duration-200;
+    min-height: 44px;
+  }
+  
+  .btn-accent {
+    @apply bg-[#FF7043] hover:bg-[#e55a2b] text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+    min-height: 44px;
   }
   
   .card {
-    @apply bg-white rounded-lg shadow-md p-6 border border-gray-200;
+    @apply bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300;
+  }
+  
+  .feature-card {
+    @apply bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 text-center;
   }
   
   .gradient-bg {
-    @apply bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500;
+    @apply bg-gradient-to-br from-[#2E7D44] via-[#4CAF50] to-[#8BC34A];
+  }
+  
+  .hero-gradient {
+    @apply bg-gradient-to-br from-[#2E7D44] to-[#4CAF50];
+  }
+  
+  .section-bg {
+    @apply bg-gradient-to-b from-[#F1F8E9] to-[#E8F5E8];
+  }
+  
+  /* Typography */
+  .heading-primary {
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold text-[#212121] leading-tight;
+  }
+  
+  .heading-secondary {
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold text-[#212121] leading-tight;
+  }
+  
+  .heading-tertiary {
+    @apply text-xl md:text-2xl font-semibold text-[#212121] leading-tight;
+  }
+  
+  .text-body {
+    @apply text-base md:text-lg text-[#757575] leading-relaxed;
+  }
+  
+  .text-caption {
+    @apply text-sm text-[#757575] leading-normal;
+  }
+  
+  /* Interactive Elements */
+  .chat-bubble {
+    @apply fixed bottom-6 right-6 w-14 h-14 bg-[#2E7D44] rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center cursor-pointer;
+  }
+  
+  .voice-button {
+    @apply w-16 h-16 bg-[#4CAF50] rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center cursor-pointer animate-pulse;
+  }
+  
+  .language-selector {
+    @apply bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D44] focus:border-transparent;
+  }
+  
+  /* Enhanced Header Styles */
+  .header-scrolled {
+    @apply shadow-lg border-b-2 border-[#2E7D44]/20;
+  }
+  
+  .nav-pill {
+    @apply bg-gray-100 rounded-full p-1 shadow-inner;
+  }
+  
+  .nav-pill:hover {
+    @apply bg-gray-200 shadow-md;
+  }
+  
+  .logo-hover {
+    @apply transform scale-105 transition-transform duration-300;
+  }
+  
+  /* Glassmorphism Effects */
+  .glass-effect {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl;
+  }
+  
+  .glass-nav {
+    @apply bg-white/20 backdrop-blur-lg border border-white/30 shadow-xl;
+  }
+  
+  .glass-button {
+    @apply bg-white/20 backdrop-blur-lg border border-white/30 shadow-xl hover:bg-white/30 hover:shadow-2xl;
+  }
+  
+  /* Scroll Progress Animation */
+  .scroll-progress {
+    @apply h-1 bg-gradient-to-r from-white/60 via-white/80 to-white/60 backdrop-blur-sm transition-all duration-300;
+  }
+  
+  /* Enhanced Animations */
+  .float-gentle {
+    animation: float-gentle 6s ease-in-out infinite;
+  }
+  
+  .glow-effect {
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
   }
 }
 
@@ -32,5 +141,34 @@
   
   .animate-pulse-slow {
     animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .animate-bounce-slow {
+    animation: bounce 2s infinite;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(-8px) rotate(-1deg);
   }
 }
