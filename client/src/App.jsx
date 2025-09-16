@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { BadgeDollarSign, Menu, X } from 'lucide-react'
 import HeroSection from './components/HeroSection'
 import FeaturesSection from './components/FeaturesSection'
 import HowItWorksSection from './components/HowItWorksSection'
@@ -24,165 +25,83 @@ function App() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#F8FDF8]">
+    <div className="min-h-screen bg-gradient-to-br from-[#F8FDF8] via-[#E8F5E8] to-white">
       {/* Navigation */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        isScrolled 
-          ? 'bg-white/10 backdrop-blur-xl border-b border-white/20 shadow-2xl' 
-          : 'bg-white/95 backdrop-blur-sm border-b border-gray-200'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className={`flex justify-between items-center transition-all duration-300 ${
-            isScrolled ? 'h-14' : 'h-16'
-          }`}>
-            {/* Logo Section */}
-            <div className="flex items-center">
-              {!isScrolled && (
-                <div className="flex-shrink-0 flex items-center group cursor-pointer">
-                  <div className="relative">
-                    <div className="p-2 rounded-full bg-transparent">
-                      <span className="text-2xl">🌱</span>
-                    </div>
-                  </div>
-                  <span className="font-bold group-hover:text-[#2E7D44] transition-all duration-300 ml-3 text-xl text-gray-900">
-                    Farm-Connect
-                  </span>
-                </div>
-              )}
-            </div>
+      <nav
+        className={`fixed w-full z-40 transition-all duration-300 ${isScrolled ? 'navbar-scrolled' : ''}`}
+        style={{
+          background: isScrolled ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.08)',
+          boxShadow: isScrolled ? '0 4px 24px 0 #22c55e22, 0 1.5px 4px 0 #4ade8033' : 'none',
+          borderBottom: isScrolled ? '1.5px solid #bbf7d055' : 'none',
+          backdropFilter: 'blur(16px)',
+          top: '0px',
+          transition: 'top 0.3s ease-in-out',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+          {/* Left: Logo */}
+          <a href="/" className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-green-50 transition duration-200">
+            <BadgeDollarSign className="h-8 w-8 text-green-600" />
+            <span className="ml-2 text-xl font-extrabold text-green-800 tracking-tight drop-shadow">AgriAI</span>
+          </a>
+          
+          {/* Hamburger Button */}
+          <button
+            className="md:hidden text-green-800 p-2 rounded-lg hover:bg-green-100 transition"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle navigation"
+          >
+            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-center">
-                <div className={`rounded-full p-1.5 flex items-center space-x-1 transition-all duration-500 ${
-                  isScrolled 
-                    ? 'bg-white/20 backdrop-blur-lg shadow-xl border border-white/30' 
-                    : 'bg-gray-100 shadow-inner'
-                }`}>
-                  <a href="#home" className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                    isScrolled 
-                      ? 'text-[#2E7D44] bg-white/30 backdrop-blur-sm shadow-lg border border-white/20' 
-                      : 'text-gray-700 hover:text-[#2E7D44] hover:bg-white'
-                  }`}>
+          {/* Menu */}
+          <ul className={`hidden md:flex items-center space-x-8 font-semibold text-green-800 text-lg transition-all duration-300`}> 
+            <li>
+              <a href="#home" className="nav-link nav-link-animated">
                     Home
                   </a>
-                  <a href="#features" className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                    isScrolled 
-                      ? 'text-[#2E7D44] hover:text-[#1e5a2f] hover:bg-white/20 backdrop-blur-sm' 
-                      : 'text-gray-700 hover:text-[#2E7D44] hover:bg-white'
-                  }`}>
-                    Features
-                  </a>
-                  <a href="#solutions" className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                    isScrolled 
-                      ? 'text-[#2E7D44] hover:text-[#1e5a2f] hover:bg-white/20 backdrop-blur-sm' 
-                      : 'text-gray-700 hover:text-[#2E7D44] hover:bg-white'
-                  }`}>
-                    Solutions
-                  </a>
-                  <a href="#about" className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                    isScrolled 
-                      ? 'text-[#2E7D44] hover:text-[#1e5a2f] hover:bg-white/20 backdrop-blur-sm' 
-                      : 'text-gray-700 hover:text-[#2E7D44] hover:bg-white'
-                  }`}>
-                    About
-                  </a>
-                </div>
-              </div>
+            </li>
+            <li>
+              <a href="#features" className="nav-link nav-link-animated">
+                Program
+              </a>
+            </li>
+            <li>
+              <a href="#about" className="nav-link nav-link-animated">
+                About us
+              </a>
+            </li>
+            <li>
+              <a href="#testimonials" className="nav-link nav-link-animated">
+                Testimonials
+              </a>
+            </li>
+            <li>
+              <a href="#contact" className="nav-link nav-link-animated">
+                Contact us
+              </a>
+            </li>
+            <li>
+              <a href="/login" className="nav-link nav-link-animated">
+                Login
+              </a>
+            </li>
+          </ul>
             </div>
 
-            {/* Auth Buttons */}
-            <div className="flex items-center space-x-3">
-              <button className={`hidden sm:block font-medium transition-all duration-300 ${
-                isScrolled 
-                  ? 'text-[#2E7D44] hover:text-[#1e5a2f] text-sm px-4 py-2 rounded-full hover:bg-white/20 backdrop-blur-sm' 
-                  : 'text-[#757575] hover:text-[#2E7D44]'
-              }`}>
-                Sign In
-              </button>
-              <button className={`transition-all duration-500 ${
-                isScrolled 
-                  ? 'text-sm px-6 py-2.5 bg-white/20 backdrop-blur-lg text-[#2E7D44] border border-white/30 rounded-full shadow-xl hover:bg-white/30 hover:shadow-2xl transform hover:-translate-y-0.5' 
-                  : 'btn-primary text-sm px-4 py-2'
-              }`}>
-                Get Started Free
-              </button>
-              
-              {/* Mobile Menu Button */}
-              <button 
-                className={`md:hidden p-2 rounded-lg transition-all duration-300 ${
-                  isScrolled 
-                    ? 'hover:bg-white/20 backdrop-blur-sm' 
-                    : 'hover:bg-gray-100'
-                }`}
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
-                <svg className={`h-6 w-6 transition-colors duration-300 ${
-                  isScrolled ? 'text-[#2E7D44]' : 'text-gray-600'
-                }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-white/95 border-t border-green-100 rounded-b-2xl shadow-lg animate-fade-in">
+            <div className="px-4 pt-4 pb-4 space-y-2">
+              <a href="#home" className="block px-3 py-2 text-green-800 hover:bg-green-50 rounded-lg font-semibold transition" onClick={() => setIsMobileMenuOpen(false)}>Home</a>
+              <a href="#features" className="block px-3 py-2 text-green-800 hover:bg-green-50 rounded-lg font-semibold transition" onClick={() => setIsMobileMenuOpen(false)}>Program</a>
+              <a href="#about" className="block px-3 py-2 text-green-800 hover:bg-green-50 rounded-lg font-semibold transition" onClick={() => setIsMobileMenuOpen(false)}>About us</a>
+              <a href="#testimonials" className="block px-3 py-2 text-green-800 hover:bg-green-50 rounded-lg font-semibold transition" onClick={() => setIsMobileMenuOpen(false)}>Testimonials</a>
+              <a href="#contact" className="block px-3 py-2 text-green-800 hover:bg-green-50 rounded-lg font-semibold transition" onClick={() => setIsMobileMenuOpen(false)}>Contact us</a>
+              <a href="/login" className="block px-3 py-2 text-green-800 hover:bg-green-50 rounded-lg font-semibold transition" onClick={() => setIsMobileMenuOpen(false)}>Login</a>
             </div>
-          </div>
-        </div>
-
-        {/* Scroll Progress Bar */}
-        {isScrolled && (
-          <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-[#2E7D44] via-[#4CAF50] to-[#8BC34A] transition-all duration-300" 
-               style={{ width: `${Math.min((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100, 100)}%` }}>
           </div>
         )}
-
-        {/* Mobile Navigation Overlay */}
-        <div className={`md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-white/20 shadow-2xl transition-all duration-500 ${
-          isMobileMenuOpen 
-            ? 'transform translate-y-0 opacity-100' 
-            : 'transform -translate-y-full opacity-0'
-        }`}>
-          <div className="px-4 py-6 space-y-4">
-            <a 
-              href="#home" 
-              className="flex items-center space-x-3 text-[#2E7D44] font-medium"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <span className="text-lg">🏠</span>
-              <span>Home</span>
-            </a>
-            <a 
-              href="#features" 
-              className="flex items-center space-x-3 text-gray-700 hover:text-[#2E7D44] transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <span className="text-lg">⚡</span>
-              <span>Features</span>
-            </a>
-            <a 
-              href="#solutions" 
-              className="flex items-center space-x-3 text-gray-700 hover:text-[#2E7D44] transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <span className="text-lg">🔧</span>
-              <span>Solutions</span>
-            </a>
-            <a 
-              href="#about" 
-              className="flex items-center space-x-3 text-gray-700 hover:text-[#2E7D44] transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <span className="text-lg">ℹ️</span>
-              <span>About</span>
-            </a>
-            <div className="pt-4 border-t border-gray-100 space-y-3">
-              <button className="w-full text-left text-gray-700 hover:text-[#2E7D44] transition-colors">
-                Sign In
-              </button>
-              <button className="w-full btn-primary text-center">
-                Get Started Free
-              </button>
-            </div>
-          </div>
-        </div>
       </nav>
 
       {/* Main Content */}
@@ -197,6 +116,26 @@ function App() {
 
       <Footer />
       <ChatWidget isOpen={isChatOpen} onToggle={() => setIsChatOpen(!isChatOpen)} />
+      
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-6 left-6 z-50">
+        <button className="w-14 h-14 bg-[#4CAF50] rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center cursor-pointer">
+          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div className="fixed bottom-6 right-6 z-50">
+        <button 
+          onClick={() => setIsChatOpen(!isChatOpen)}
+          className="w-14 h-14 bg-[#2E7D44] rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center cursor-pointer"
+        >
+          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+          </svg>
+        </button>
+      </div>
     </div>
   )
 }
