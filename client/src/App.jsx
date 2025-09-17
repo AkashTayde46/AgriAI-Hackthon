@@ -13,6 +13,7 @@ import Profile from './pages/Profile'
 import GovernmentSchemes from './pages/GovernmentSchemes'
 import ExpenseTracker from './pages/ExpenseTracker'
 import News from './pages/News'
+import Weather from './pages/Weather'
 import ErrorPage from './components/ErrorPage'
 import FeaturePlaceholder from './pages/FeaturePlaceholder'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -79,10 +80,7 @@ function App() {
             } />
             <Route path="/weather" element={
               <ProtectedRoute>
-                <FeaturePlaceholder 
-                  featureName="Weather Intelligence" 
-                  description="Real-time weather forecasts and climate-smart farming advice"
-                />
+                <Weather />
               </ProtectedRoute>
             } />
             <Route path="/market" element={
