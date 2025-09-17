@@ -4,7 +4,6 @@ import HeroSection from './HeroSection'
 import FeaturesSection from './FeaturesSection'
 import HowItWorksSection from './HowItWorksSection'
 import TechnologySection from './TechnologySection'
-import DashboardPreviewSection from './DashboardPreviewSection'
 import TestimonialsSection from './TestimonialsSection'
 import ContactSection from './ContactSection'
 import Footer from './Footer'
@@ -111,7 +110,6 @@ function LandingPage() {
         <FeaturesSection />
         <HowItWorksSection />
         <TechnologySection />
-        <DashboardPreviewSection />
         <TestimonialsSection />
         <ContactSection />
       </main>
