@@ -18,6 +18,7 @@ import ErrorPage from './components/ErrorPage'
 import FeaturePlaceholder from './pages/FeaturePlaceholder'
 import ProtectedRoute from './components/ProtectedRoute'
 import FarmerCommunityPage from './pages/FarmerCommunityPage.jsx'
+import ExpertConsultationPage from './pages/ExpertConsultationPage.jsx'
 // Auth Provider
 import { AuthProvider } from './Authorisation/AuthProvider.jsx'
 
@@ -105,14 +106,14 @@ function App() {
     <FarmerCommunityPage />
   </ProtectedRoute>
 } />
-            <Route path="/experts" element={
+            {/* <Route path="/experts" element={
               <ProtectedRoute>
                 <FeaturePlaceholder 
                   featureName="Expert Consultation" 
                   description="Book video calls with agricultural specialists and experts"
                 />
               </ProtectedRoute>
-            } />
+            } /> */}
             <Route path="/learning" element={
               <ProtectedRoute>
                 <FeaturePlaceholder 
@@ -161,6 +162,11 @@ function App() {
             <Route path="/schemes" element={
               <ProtectedRoute>
                 <GovernmentSchemes />
+              </ProtectedRoute>
+            } />
+            <Route path="/experts" element={
+              <ProtectedRoute>
+                <ExpertConsultationPage />
               </ProtectedRoute>
             } />
             <Route path="/expense-tracker" element={
