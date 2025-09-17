@@ -1114,13 +1114,21 @@ const VoiceNavigator = () => {
       case "SCROLL_UP":
         console.log('🎤 Scrolling up');
         speakResponse("Scrolling up.");
-        window.scrollBy(0, -300);
+        try {
+          window.scrollBy(0, -300);
+        } catch (error) {
+          console.warn('Could not scroll up:', error);
+        }
         break;
         
       case "SCROLL_DOWN":
         console.log('🎤 Scrolling down');
         speakResponse("Scrolling down.");
-        window.scrollBy(0, 300);
+        try {
+          window.scrollBy(0, 300);
+        } catch (error) {
+          console.warn('Could not scroll down:', error);
+        }
         break;
         
       case "SEARCH":

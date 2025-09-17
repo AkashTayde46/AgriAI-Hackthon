@@ -60,10 +60,12 @@ const LoginPage = () => {
         return;
       }
       
-      // Only clear auth data if user is not authenticated
-      console.log('🧹 Clearing stale auth data on login page entry');
-      clearAuthData();
-    }, 500); // Longer delay to prevent race conditions
+      // Only clear auth data if user is not authenticated and we're not in OAuth flow
+      if (!hasAccessToken && window.location.pathname !== '/success-login') {
+        console.log('🧹 Clearing stale auth data on login page entry');
+        clearAuthData();
+      }
+    }, 300); // Reduced delay but still prevents race conditions
     
     return () => clearTimeout(timer);
   }, []); // Removed navigate from dependencies to prevent multiple executions

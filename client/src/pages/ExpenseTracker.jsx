@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart3, Plus, Upload, History, Home, TrendingUp, Settings, Menu, X } from 'lucide-react';
 import NavBar from '../components/NavBar';
-import Dashboard from '../components/Dashboard';
-import TransactionForm from '../components/TransactionForm';
+import Dashboard from '../components/ExpenseDashboard';
+import TransactionForm from '../components/ExpenseForm';
 import ReceiptUpload from '../components/ReceiptUpload';
-import TransactionHistory from '../components/TransactionHistory';
-import AnalyticsDashboard from '../components/AnalyticsDashboard'; // Added import for AnalyticsDashboard
-import api from '../Authorisation/axiosConfig'; // Import configured axios instance
+import TransactionHistory from '../components/ExpenseTable';
+import AnalyticsDashboard from '../components/AnalyticsDashboard';
+import axios from 'axios';
 
 const ExpenseTracker = () => {
     const [transactions, setTransactions] = useState([]);
@@ -15,7 +15,7 @@ const ExpenseTracker = () => {
     const [activeTab, setActiveTab] = useState('dashboard');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [sidebarOpen, setSidebarOpen] = useState(false); // Add sidebar state
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     // Navigation items
     const navItems = [
@@ -34,20 +34,18 @@ const ExpenseTracker = () => {
         try {
             setLoading(true);
             const [transactionsRes, statsRes, categoriesRes] = await Promise.all([
-                api.get('/transactions'),
-                api.get('/transactions/stats'),
-                api.get('/transactions/categories')
+                axios.get(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/transactions`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('agriai_token')}` }
+                }),
+                axios.get(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/transactions/stats`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('agriai_token')}` }
+                }),
+                axios.get(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/transactions/categories`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('agriai_token')}` }
+                })
             ]);
 
             if (transactionsRes.data) {
-                console.log('🔍 Frontend - Received transactions:', transactionsRes.data);
-                if (transactionsRes.data.length > 0) {
-                    console.log('🔍 Frontend - First transaction amount:', {
-                        amount: transactionsRes.data[0].amount,
-                        type: typeof transactionsRes.data[0].amount,
-                        text: transactionsRes.data[0].text
-                    });
-                }
                 setTransactions(transactionsRes.data);
             }
 
@@ -68,20 +66,20 @@ const ExpenseTracker = () => {
 
     const addTransaction = async (transactionData) => {
         try {
-            console.log('🔍 Frontend - Transaction data before API call:', transactionData);
-            
-            const response = await api.post('/transactions', {
-                ...transactionData,
-                source: 'manual'
-            });
-
-            console.log('🔍 Frontend - API response:', response.data);
+            const response = await axios.post(
+                `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/transactions`,
+                { ...transactionData, source: 'manual' },
+                { headers: { Authorization: `Bearer ${localStorage.getItem('agriai_token')}` } }
+            );
 
             if (response.data) {
                 setTransactions(prev => [response.data, ...prev]);
                 
                 // Refresh stats
-                const statsRes = await api.get('/transactions/stats');
+                const statsRes = await axios.get(
+                    `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/transactions/stats`,
+                    { headers: { Authorization: `Bearer ${localStorage.getItem('agriai_token')}` } }
+                );
                 if (statsRes.data) {
                     setStats(statsRes.data);
                 }
@@ -96,16 +94,20 @@ const ExpenseTracker = () => {
 
     const addReceiptTransaction = async (transactionData) => {
         try {
-            const response = await api.post('/transactions/receipt', {
-                ...transactionData,
-                source: 'receipt'
-            });
+            const response = await axios.post(
+                `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/transactions/receipt`,
+                { ...transactionData, source: 'receipt' },
+                { headers: { Authorization: `Bearer ${localStorage.getItem('agriai_token')}` } }
+            );
 
             if (response.data) {
                 setTransactions(prev => [response.data, ...prev]);
                 
                 // Refresh stats
-                const statsRes = await api.get('/transactions/stats');
+                const statsRes = await axios.get(
+                    `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/transactions/stats`,
+                    { headers: { Authorization: `Bearer ${localStorage.getItem('agriai_token')}` } }
+                );
                 if (statsRes.data) {
                     setStats(statsRes.data);
                 }
@@ -120,18 +122,20 @@ const ExpenseTracker = () => {
 
     const addMultipleTransactionsFromReceipt = async (transactionsData) => {
         try {
-            const response = await api.post('/transactions/receipt/batch', {
-                transactions: transactionsData.map(t => ({
-                    ...t,
-                    source: 'receipt'
-                }))
-            });
+            const response = await axios.post(
+                `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/transactions/receipt/batch`,
+                { transactions: transactionsData.map(t => ({ ...t, source: 'receipt' })) },
+                { headers: { Authorization: `Bearer ${localStorage.getItem('agriai_token')}` } }
+            );
 
             if (response.data && response.data.transactions) {
                 setTransactions(prev => [...response.data.transactions, ...prev]);
                 
                 // Refresh stats
-                const statsRes = await api.get('/transactions/stats');
+                const statsRes = await axios.get(
+                    `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/transactions/stats`,
+                    { headers: { Authorization: `Bearer ${localStorage.getItem('agriai_token')}` } }
+                );
                 if (statsRes.data) {
                     setStats(statsRes.data);
                 }
@@ -146,13 +150,19 @@ const ExpenseTracker = () => {
 
     const deleteTransaction = async (id) => {
         try {
-            const response = await api.delete(`/transactions/${id}`);
+            const response = await axios.delete(
+                `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/transactions/${id}`,
+                { headers: { Authorization: `Bearer ${localStorage.getItem('agriai_token')}` } }
+            );
 
             if (response.data) {
                 setTransactions(prev => prev.filter(t => t._id !== id));
                 
                 // Refresh stats
-                const statsRes = await api.get('/transactions/stats');
+                const statsRes = await axios.get(
+                    `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/transactions/stats`,
+                    { headers: { Authorization: `Bearer ${localStorage.getItem('agriai_token')}` } }
+                );
                 if (statsRes.data) {
                     setStats(statsRes.data);
                 }
@@ -167,7 +177,7 @@ const ExpenseTracker = () => {
         return (
             <div className="min-h-screen bg-gray-50">
                 <NavBar />
-                <div className="flex items-center justify-center h-screen pt-16"> {/* Add pt-16 */}
+                <div className="flex items-center justify-center h-screen pt-16">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
                 </div>
             </div>
@@ -178,7 +188,7 @@ const ExpenseTracker = () => {
         return (
             <div className="min-h-screen bg-gray-50">
                 <NavBar />
-                <div className="flex items-center justify-center h-screen pt-16"> {/* Add pt-16 */}
+                <div className="flex items-center justify-center h-screen pt-16">
                     <div className="text-center">
                         <div className="text-red-500 text-6xl mb-4">⚠️</div>
                         <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Data</h2>
@@ -199,7 +209,7 @@ const ExpenseTracker = () => {
         <div className="min-h-screen bg-gray-50">
             <NavBar />
             
-            <div className="flex pt-16 h-screen"> {/* Fixed height container */}
+            <div className="flex pt-16 h-screen">
                 {/* Mobile Menu Overlay */}
                 {sidebarOpen && (
                     <div 
@@ -231,7 +241,7 @@ const ExpenseTracker = () => {
                                         key={item.id}
                                         onClick={() => {
                                             setActiveTab(item.id);
-                                            setSidebarOpen(false); // Close sidebar on mobile
+                                            setSidebarOpen(false);
                                         }}
                                         className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all ${
                                             isActive

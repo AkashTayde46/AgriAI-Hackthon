@@ -61,6 +61,9 @@ app.get('/', (req, res) => {
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const schemeRoutes = require('./routes/schemeRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
 
 // API Routes
 app.get('/api/health', (req, res) => {
@@ -95,6 +98,15 @@ app.get('/api/sample-data', (req, res) => {
 
 // Authentication routes
 app.use('/api/auth', authRoutes);
+
+// User routes
+app.use('/api/user', userRoutes);
+
+// Scheme routes
+app.use('/api/schemes', schemeRoutes);
+
+// Transaction routes
+app.use('/api/transactions', transactionRoutes);
 
 // Start the server
 app.listen(port, () => {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 function ExpenseDetails({ incomeAmt, expenseAmt, stats }) {
     const balance = incomeAmt - expenseAmt;
@@ -6,7 +6,7 @@ function ExpenseDetails({ incomeAmt, expenseAmt, stats }) {
     return (
         <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
             <div className="text-center mb-6">
-                <h2 className="text-lg font-semibold text-gray-700 mb-2">Your Balance</h2>
+                <h2 className="text-lg font-semibold text-gray-700 mb-2">Your Farm Balance</h2>
                 <div className={`text-4xl font-bold ${
                     balance >= 0 ? 'text-green-600' : 'text-red-600'
                 }`}>
@@ -66,7 +66,7 @@ function ExpenseDetails({ incomeAmt, expenseAmt, stats }) {
                 <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                     <div className="flex justify-between items-center mb-2">
                         <span className="text-sm font-medium text-gray-700">
-                            {balance > 0 ? 'Savings Rate' : 'Overspending Rate'}
+                            {balance > 0 ? 'Profit Margin' : 'Loss Percentage'}
                         </span>
                         <span className={`text-lg font-bold ${
                             balance > 0 ? 'text-green-600' : 'text-red-600'
@@ -76,8 +76,8 @@ function ExpenseDetails({ incomeAmt, expenseAmt, stats }) {
                     </div>
                     <p className="text-xs text-gray-600">
                         {balance > 0 
-                            ? `You're saving ${Math.abs((balance / incomeAmt) * 100).toFixed(1)}% of your income`
-                            : `You're spending ${Math.abs((balance / incomeAmt) * 100).toFixed(1)}% more than your income`
+                            ? `You're making a profit of ${Math.abs((balance / incomeAmt) * 100).toFixed(1)}% on your farm operations`
+                            : `You're operating at a loss of ${Math.abs((balance / incomeAmt) * 100).toFixed(1)}% - consider optimizing costs`
                         }
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
@@ -85,8 +85,45 @@ function ExpenseDetails({ incomeAmt, expenseAmt, stats }) {
                     </p>
                 </div>
             )}
+
+            {/* Agricultural Insights */}
+            {stats && stats.categoryBreakdown && (
+                <div className="mt-4 p-4 bg-green-50 rounded-lg">
+                    <h4 className="text-sm font-medium text-green-800 mb-2">🌾 Agricultural Insights</h4>
+                    <div className="space-y-2">
+                        {stats.topCategories && stats.topCategories.length > 0 && (
+                            <div>
+                                <p className="text-xs text-green-700 font-medium">Top Expense Categories:</p>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                    {stats.topCategories.slice(0, 3).map((cat, index) => (
+                                        <span key={index} className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full">
+                                            {cat.category} ({cat.percentage.toFixed(1)}%)
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        
+                        {stats.seasonalBreakdown && Object.keys(stats.seasonalBreakdown).length > 0 && (
+                            <div>
+                                <p className="text-xs text-green-700 font-medium">Seasonal Activity:</p>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                    {Object.entries(stats.seasonalBreakdown)
+                                        .filter(([season, data]) => data.income > 0 || data.expense > 0)
+                                        .slice(0, 2)
+                                        .map(([season, data]) => (
+                                            <span key={season} className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full">
+                                                {season} (₹{(data.income + data.expense).toLocaleString()})
+                                            </span>
+                                        ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
 
-export default ExpenseDetails
+export default ExpenseDetails;

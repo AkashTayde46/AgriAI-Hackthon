@@ -152,7 +152,13 @@ const UnifiedAssistant = () => {
   }, []);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      try {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      } catch (error) {
+        console.warn('Could not scroll to messages end:', error);
+      }
+    }
   }, [messages]);
 
   const formatTime = (timestamp) => {
