@@ -99,6 +99,10 @@ const Dashboard = () => {
       <section className="py-24 bg-gradient-to-b from-white to-green-50 relative overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-green-200/10 to-emerald-200/10 blur-2xl" />
+          {/* Animated background elements */}
+          <div className="absolute -top-20 -right-20 w-40 h-40 bg-green-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+          <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-emerald-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+          <div className="absolute top-20 left-20 w-40 h-40 bg-teal-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
@@ -110,22 +114,22 @@ const Dashboard = () => {
                 className="block relative rounded-2xl cursor-pointer group"
               >
                 <div className="relative p-8 dashboard-card group-hover:scale-105 group-hover:shadow-2xl group-hover:border-green-200">
-                  <div className="mb-6">
+                  <div className="mb-6 icon-container relative z-10">
                     {React.createElement(feature.icon, {
-                      className: "h-16 w-16 text-green-600 transition-colors duration-300 group-hover:text-emerald-600"
+                      className: "h-16 w-16 text-green-600 transition-all duration-300 group-hover:text-emerald-600 group-hover:drop-shadow-lg"
                     })}
                   </div>
-                  <h3 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4 transition-all duration-300 group-hover:from-emerald-600 group-hover:to-green-600">
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4 transition-all duration-300 group-hover:from-emerald-600 group-hover:to-green-600 relative z-10 group-hover:scale-102">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed flex-grow transition-colors duration-300 group-hover:text-gray-700">
+                  <p className="text-gray-600 text-sm leading-relaxed flex-grow transition-colors duration-300 group-hover:text-gray-700 relative z-10">
                     {feature.description}
                   </p>
-                  <div className="mt-6">
-                    <span className="inline-flex items-center text-emerald-600 font-semibold transition-all duration-300 group-hover:text-green-600 group-hover:translate-x-1">
+                  <div className="mt-6 relative z-10">
+                    <span className="inline-flex items-center text-emerald-600 font-semibold transition-all duration-300 group-hover:text-green-600 group-hover:translate-x-1 group-hover:scale-102">
                       Explore
                       <svg
-                        className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1"
+                        className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1 group-hover:scale-105"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
