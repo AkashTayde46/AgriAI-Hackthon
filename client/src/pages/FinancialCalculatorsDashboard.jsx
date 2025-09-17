@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import NavBar from "../components/NavBar";
+import DashboardNav from "../components/DashboardNav";
 import Footer from "../components/Footer";
 import PPFCalculator from './PpfCalculator';
 import SIPCalculator from './SIPCalculator';
@@ -107,7 +107,7 @@ const FinancialCalculatorsDashboard = () => {
     const SelectedCalculator = activeCalculator.component;
     return (
       <div className="flex flex-col min-h-screen">
-        <NavBar language={language} toggleLanguage={() => setLanguage(language === 'en' ? 'hi' : 'en')} />
+        <DashboardNav />
         <div className="flex-grow">
           <button 
             onClick={handleBackToDashboard}
@@ -125,7 +125,7 @@ const FinancialCalculatorsDashboard = () => {
   // Default view: Calculator Cards
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-tr from-green-100 via-white to-emerald-50 mt-11">
-      <NavBar language={language} toggleLanguage={() => setLanguage(language === 'en' ? 'hi' : 'en')} />
+      <DashboardNav />
       <div className="flex-grow p-8">
         <div className="container mx-auto">
           <h1 className="text-4xl font-extrabold text-green-800 mb-2 text-center drop-shadow-lg animate-fade-in">Financial Calculators</h1>

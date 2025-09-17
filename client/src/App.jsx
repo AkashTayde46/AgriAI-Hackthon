@@ -12,7 +12,7 @@ import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
 import GovernmentSchemes from './pages/GovernmentSchemes'
 import ExpenseTracker from './pages/ExpenseTracker'
-import NotFound from './pages/NotFound'
+import ErrorPage from './components/ErrorPage'
 import FeaturePlaceholder from './pages/FeaturePlaceholder'
 import ProtectedRoute from './components/ProtectedRoute'
 
@@ -176,7 +176,7 @@ function App() {
             } />
             
             {/* Catch all route - 404 Not Found */}
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<ErrorPage />} />
           </Routes>
         </div>
     </AuthProvider>

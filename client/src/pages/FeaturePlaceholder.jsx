@@ -1,26 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Home } from 'lucide-react';
+import DashboardNav from '../components/DashboardNav';
 
 const FeaturePlaceholder = ({ featureName, description }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
-      {/* Navbar */}
-      <nav className="bg-white/90 shadow-lg border-b border-green-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center gap-2">
-              <span className="text-xl font-extrabold text-green-800">AgriAI</span>
-            </Link>
-            <Link to="/dashboard" className="text-green-600 hover:text-green-700">
-              Back to Dashboard
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+      <DashboardNav />
+      
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-16">
+      <div className="max-w-4xl mx-auto px-4 py-16 pt-24">
         <div className="text-center mb-12">
           <div className="w-24 h-24 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-6">
             <svg className="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

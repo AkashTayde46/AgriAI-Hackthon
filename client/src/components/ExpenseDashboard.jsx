@@ -32,8 +32,8 @@ const Dashboard = ({ stats, transactions }) => {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Financial Dashboard</h1>
-                    <p className="text-gray-600 mt-1">Track your income, expenses, and financial health</p>
+                    <h1 className="text-3xl font-bold text-gray-900">Farm Financial Dashboard</h1>
+                    <p className="text-gray-600 mt-1">Track your agricultural income, expenses, and farm financial health</p>
                 </div>
                 <div className="text-right">
                     <p className="text-sm text-gray-500">Last updated</p>

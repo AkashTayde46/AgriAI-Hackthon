@@ -11,6 +11,7 @@ const LoginPage = () => {
   const { login } = useContext(AuthContext);
   const { isAuthenticated, user } = useAuthState();
   const [isLoading, setIsLoading] = useState(false);
+  const [isAlreadyLoggedIn, setIsAlreadyLoggedIn] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -48,15 +49,18 @@ const LoginPage = () => {
       const authData = getAuthData();
       if (authData.isAuthenticated && authData.user) {
         console.log('🔐 User already authenticated, redirecting to dashboard');
-        toast.info('You are already logged in! Redirecting to dashboard...', {
+        setIsAlreadyLoggedIn(true);
+        toast.warning('You are already logged in! You do not need to access this page. Redirecting to dashboard...', {
           position: "top-center",
-          autoClose: 2000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
         });
-        navigate('/dashboard');
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000);
         return;
       }
       
@@ -212,6 +216,33 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
+
+  // Show already logged in message
+  if (isAlreadyLoggedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-4 relative overflow-hidden">
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden max-w-md w-full border border-green-100/50 relative z-10 text-center p-8">
+          <div className="mb-6">
+            <div className="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Already Logged In</h2>
+            <p className="text-gray-600 mb-4">
+              You are already logged in! You do not need to access this page.
+            </p>
+            <p className="text-sm text-gray-500">
+              Redirecting you to the dashboard...
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-4 relative overflow-hidden">

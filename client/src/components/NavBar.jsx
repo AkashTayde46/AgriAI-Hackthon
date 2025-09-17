@@ -69,7 +69,7 @@ const NavBar = ({ language, toggleLanguage }) => {
           {/* Left: Logo */}
           <a href="/" className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-green-50 transition duration-200">
             <BadgeDollarSign className="h-8 w-8 text-green-600" />
-            <span className="ml-2 text-xl font-extrabold text-green-800 tracking-tight drop-shadow">FinAdvise</span>
+            <span className="ml-2 text-xl font-extrabold text-green-800 tracking-tight drop-shadow">AgriAI</span>
           </a>
 
           {/* Right: Navigation Links */}

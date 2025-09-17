@@ -18,6 +18,7 @@ import {
   Loader2
 } from 'lucide-react';
 import AuthContext from '../Authorisation/AuthProvider';
+import DashboardNav from '../components/DashboardNav';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { getAuthData } from '../utils/authUtils';
@@ -186,23 +187,9 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
-      {/* Navbar */}
-      <nav className="bg-white/90 shadow-lg border-b border-green-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link to="/dashboard" className="flex items-center gap-2">
-              <ArrowLeft className="h-5 w-5 text-green-600" />
-              <span className="text-lg font-semibold text-green-800">Back to Dashboard</span>
-            </Link>
-            <Link to="/" className="flex items-center gap-2">
-              <BadgeDollarSign className="h-6 w-6 text-green-600" />
-              <span className="text-xl font-extrabold text-green-800">AgriAI</span>
-            </Link>
-                </div>
-              </div>
-      </nav>
-
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <DashboardNav />
+      
+      <div className="max-w-4xl mx-auto px-4 py-8 pt-24">
         {/* Profile Header */}
         <div className="bg-white rounded-2xl shadow-xl border border-green-100 p-8 mb-8">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">

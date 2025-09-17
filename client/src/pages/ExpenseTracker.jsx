@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart3, Plus, Upload, History, Home, TrendingUp, Settings, Menu, X } from 'lucide-react';
-import NavBar from '../components/NavBar';
 import Dashboard from '../components/ExpenseDashboard';
 import TransactionForm from '../components/ExpenseForm';
 import ReceiptUpload from '../components/ReceiptUpload';
 import TransactionHistory from '../components/ExpenseTable';
 import AnalyticsDashboard from '../components/AnalyticsDashboard';
+import DashboardNav from '../components/DashboardNav';
 import axios from 'axios';
 
 const ExpenseTracker = () => {
@@ -176,8 +176,7 @@ const ExpenseTracker = () => {
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-50">
-                <NavBar />
-                <div className="flex items-center justify-center h-screen pt-16">
+                <div className="flex items-center justify-center h-screen">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
                 </div>
             </div>
@@ -187,8 +186,7 @@ const ExpenseTracker = () => {
     if (error) {
         return (
             <div className="min-h-screen bg-gray-50">
-                <NavBar />
-                <div className="flex items-center justify-center h-screen pt-16">
+                <div className="flex items-center justify-center h-screen">
                     <div className="text-center">
                         <div className="text-red-500 text-6xl mb-4">⚠️</div>
                         <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Data</h2>
@@ -207,9 +205,9 @@ const ExpenseTracker = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <NavBar />
+            <DashboardNav />
             
-            <div className="flex pt-16 h-screen">
+            <div className="flex h-[calc(100vh-4rem)] pt-16">
                 {/* Mobile Menu Overlay */}
                 {sidebarOpen && (
                     <div 
@@ -221,7 +219,7 @@ const ExpenseTracker = () => {
                 {/* Sidebar Navigation - Fixed height */}
                 <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-sm border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
                     sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-                }`} style={{ top: '64px', height: 'calc(100vh - 64px)' }}>
+                }`} style={{ top: '4rem', height: 'calc(100vh - 4rem)' }}>
                     <div className="p-6 h-full flex flex-col">
                         <div className="flex items-center justify-between mb-6">
                             <h1 className="text-xl font-bold text-gray-900">Expense Tracker</h1>
@@ -260,17 +258,6 @@ const ExpenseTracker = () => {
 
                 {/* Main Content - Scrollable */}
                 <div className="flex-1 overflow-hidden">
-                    {/* Mobile Header */}
-                    <div className="lg:hidden flex items-center justify-between p-4 bg-white border-b border-gray-200">
-                        <h1 className="text-xl font-bold text-gray-900">Expense Tracker</h1>
-                        <button
-                            onClick={() => setSidebarOpen(true)}
-                            className="p-2 rounded-lg bg-white shadow-sm border border-gray-200"
-                        >
-                            <Menu className="h-5 w-5 text-gray-600" />
-                        </button>
-                    </div>
-
                     {/* Scrollable Content Area */}
                     <div className="h-full overflow-y-auto p-4 lg:p-8">
                         <div className="max-w-7xl mx-auto">

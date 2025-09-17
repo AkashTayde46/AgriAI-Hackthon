@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Search, RefreshCcw, Globe, Briefcase, User } from "lucide-react";
-import NavBar from "../components/NavBar";
+import DashboardNav from "../components/DashboardNav";
 
 // Animation CSS for fade-in and card hover
 const fadeInStyle = `
@@ -73,7 +73,7 @@ const NewsPage = () => {
     <>
       {/* Animation style injected locally */}
       <style>{fadeInStyle}</style>
-      <NavBar language="en" toggleLanguage={() => {}} />
+      <DashboardNav />
 
       <div className="min-h-screen bg-gradient-to-br py-16 from-green-50 to-white">
         <div className="container mx-auto px-4 py-8">

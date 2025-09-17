@@ -16,10 +16,10 @@ const AnalyticsDashboard = ({ transactions, stats }) => {
     const last6Months = [];
     const now = new Date();
     for (let i = 5; i >= 0; i--) {
-        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        const monthKey = date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+            const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const monthKey = date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
         last6Months.push({
-            month: monthKey,
+                month: monthKey,
             income: monthlyBreakdown[monthKey]?.income || 0,
             expense: monthlyBreakdown[monthKey]?.expense || 0,
             balance: monthlyBreakdown[monthKey]?.balance || 0
@@ -48,7 +48,7 @@ const AnalyticsDashboard = ({ transactions, stats }) => {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
-                    <p className="text-gray-600 mt-1">Detailed insights into your financial patterns</p>
+                    <p className="text-gray-600 mt-1">Detailed insights into your farm financial patterns</p>
                 </div>
                 <div className="text-right">
                     <p className="text-sm text-gray-500">Last updated</p>
@@ -92,11 +92,11 @@ const AnalyticsDashboard = ({ transactions, stats }) => {
                         </div>
                         <div className="p-2 bg-blue-100 rounded-lg">
                             <PieChart className="h-6 w-6 text-blue-600" />
-                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-600">Total Transactions</p>
@@ -210,7 +210,7 @@ const AnalyticsDashboard = ({ transactions, stats }) => {
 
                 {/* Financial Health */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Financial Health</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Farm Financial Health</h3>
                     <div className="space-y-4">
                         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                             <div className="flex items-center space-x-3">
@@ -219,10 +219,10 @@ const AnalyticsDashboard = ({ transactions, stats }) => {
                                     <p className="text-sm font-medium text-gray-900">Current Balance</p>
                                     <p className={`text-lg font-bold ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                                         ₹{balance.toLocaleString()}
-                                    </p>
-                                </div>
+                        </p>
+                    </div>
                             </div>
-                        </div>
+                    </div>
 
                         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                             <div className="flex items-center space-x-3">
