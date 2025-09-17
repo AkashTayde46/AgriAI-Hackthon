@@ -17,7 +17,7 @@ import Weather from './pages/Weather'
 import ErrorPage from './components/ErrorPage'
 import FeaturePlaceholder from './pages/FeaturePlaceholder'
 import ProtectedRoute from './components/ProtectedRoute'
-
+import FarmerCommunityPage from './pages/FarmerCommunityPage.jsx'
 // Auth Provider
 import { AuthProvider } from './Authorisation/AuthProvider.jsx'
 
@@ -60,6 +60,7 @@ function App() {
                 <Profile />
               </ProtectedRoute>
             } />
+             
             
             {/* Feature Routes */}
             <Route path="/ai-advisor" element={
@@ -100,13 +101,10 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/community" element={
-              <ProtectedRoute>
-                <FeaturePlaceholder 
-                  featureName="Farmer Community" 
-                  description="Connect with farmers, share experiences, and learn best practices"
-                />
-              </ProtectedRoute>
-            } />
+  <ProtectedRoute>
+    <FarmerCommunityPage />
+  </ProtectedRoute>
+} />
             <Route path="/experts" element={
               <ProtectedRoute>
                 <FeaturePlaceholder 
