@@ -209,7 +209,7 @@ const AnalyticsDashboard = ({ transactions, stats }) => {
                 </div>
 
                 {/* Financial Health */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Farm Financial Health</h3>
                     <div className="space-y-4">
                         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">

@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
 import GovernmentSchemes from './pages/GovernmentSchemes'
 import ExpenseTracker from './pages/ExpenseTracker'
+import News from './pages/News'
 import ErrorPage from './components/ErrorPage'
 import FeaturePlaceholder from './pages/FeaturePlaceholder'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -140,7 +141,7 @@ function App() {
                 />
               </ProtectedRoute>
             } />
-            <Route path="/calcpro" element={
+            <Route path="/reels" element={
               <ProtectedRoute>
                 <FeaturePlaceholder 
                   featureName="Reels" 
@@ -158,10 +159,7 @@ function App() {
             } />
             <Route path="/news" element={
               <ProtectedRoute>
-                <FeaturePlaceholder 
-                  featureName="Agricultural News" 
-                  description="Latest news, government schemes, and industry updates"
-                />
+                <News />
               </ProtectedRoute>
             } />
             <Route path="/schemes" element={

@@ -18,7 +18,7 @@ const Dashboard = () => {
   // English-only data matching FinAdvise
   const navItems = {
     dashboard: "Dashboard",
-    calcpro: "CalcPro",
+    reels: "Reels",
     news: "News",
     advisormap: "AdvisorMap",
   };
