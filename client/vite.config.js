@@ -8,6 +8,18 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  esbuild: {
+    loader: 'jsx',
+    include: /src\/.*\.[jt]sx?$/,
+    exclude: []
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      loader: {
+        '.js': 'jsx'
+      }
+    }
+  },
   server: {
     port: 3000,
     proxy: {

@@ -1,18 +1,43 @@
 // server.js
 
+// Load environment variables FIRST
+require('dotenv').config(); // Load environment variables from .env file
+
 // Import required packages
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config(); // Load environment variables from .env file
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const passport = require('./config/passport');
 
 // Create an Express application
 const app = express();
 const port = process.env.PORT || 8000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json()); // Allows parsing of JSON request bodies
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// Session configuration
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-session-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+  }
+}));
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 // MongoDB Connection (Optional)
 if (process.env.MONGO_URI) {
@@ -33,6 +58,9 @@ if (process.env.MONGO_URI) {
 app.get('/', (req, res) => {
   res.send('Hello from the AgriAI backend!');
 });
+
+// Import routes
+const authRoutes = require('./routes/authRoutes');
 
 // API Routes
 app.get('/api/health', (req, res) => {
@@ -64,6 +92,9 @@ app.get('/api/sample-data', (req, res) => {
     ]
   });
 });
+
+// Authentication routes
+app.use('/api/auth', authRoutes);
 
 // Start the server
 app.listen(port, () => {

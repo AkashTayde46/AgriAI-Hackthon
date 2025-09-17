@@ -1,214 +1,190 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { BadgeDollarSign } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [email, setEmail] = useState('');
+
+  const handleNewsletterSubmit = (e) => {
+    e.preventDefault();
+    console.log('Newsletter subscription:', email);
+    setEmail('');
+  };
 
   const footerLinks = {
-    product: [
-      { name: 'Features', href: '#features' },
-      { name: 'How It Works', href: '#solutions' },
-      { name: 'Pricing', href: '#pricing' },
-      { name: 'API Documentation', href: '#' },
-      { name: 'Integrations', href: '#' }
+    services: [
+      { name: 'Crop Advisory', href: '#features' },
+      { name: 'Disease Detection', href: '#features' },
+      { name: 'Market Analysis', href: '#features' },
+      { name: 'Weather Forecast', href: '#features' }
     ],
     company: [
       { name: 'About Us', href: '#about' },
       { name: 'Our Team', href: '#' },
       { name: 'Careers', href: '#' },
-      { name: 'Press', href: '#' },
       { name: 'Blog', href: '#' }
     ],
-    support: [
+    resources: [
       { name: 'Help Center', href: '#' },
-      { name: 'Contact Support', href: '#contact' },
-      { name: 'Community Forum', href: '#' },
+      { name: 'API Documentation', href: '#' },
       { name: 'Training Resources', href: '#' },
-      { name: 'Status Page', href: '#' }
+      { name: 'Community Forum', href: '#' }
     ],
     legal: [
       { name: 'Privacy Policy', href: '#' },
       { name: 'Terms of Service', href: '#' },
       { name: 'Cookie Policy', href: '#' },
-      { name: 'GDPR Compliance', href: '#' },
       { name: 'Data Security', href: '#' }
     ]
   };
 
-  const socialLinks = [
-    { name: 'Facebook', icon: '📘', href: '#' },
-    { name: 'Twitter', icon: '🐦', href: '#' },
-    { name: 'LinkedIn', icon: '💼', href: '#' },
-    { name: 'YouTube', icon: '📺', href: '#' },
-    { name: 'Instagram', icon: '📷', href: '#' }
-  ];
-
-  const contactInfo = [
-    { icon: '📧', text: 'support@farm-connect.com' },
-    { icon: '📞', text: '+1 (555) 123-4567' },
-    { icon: '📍', text: '123 Agriculture Street, Farm City, FC 12345' }
-  ];
-
   return (
-    <footer className="bg-[#212121] text-white">
-      {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
-          {/* Brand Section */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center mb-6">
-              <span className="text-3xl mr-3">🌱</span>
-              <span className="text-2xl font-bold">Farm-Connect</span>
+    <footer className="bg-green-50 w-full">
+      <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="lg:flex lg:items-start lg:gap-8">
+          <div className="text-green-600">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <BadgeDollarSign className="h-8 w-8" />
+              <span className="text-2xl font-bold text-green-800">AgriAI</span>
             </div>
-            <p className="text-gray-300 mb-6 max-w-md">
-              Empowering farmers worldwide with AI-powered agricultural advisory services. 
-              Join thousands of farmers who are transforming their practices with our intelligent platform.
-            </p>
-            
-            {/* Contact Info */}
-            <div className="space-y-3 mb-6">
-              {contactInfo.map((contact, index) => (
-                <div key={index} className="flex items-center gap-3 text-gray-300">
-                  <span className="text-lg">{contact.icon}</span>
-                  <span className="text-sm">{contact.text}</span>
+          </div>
+
+          <div className="mt-8 grid grid-cols-2 gap-8 lg:mt-0 lg:grid-cols-5 lg:gap-y-16">
+            {/* Newsletter */}
+            <div className="col-span-2">
+              <h2 className="text-2xl font-bold text-gray-900">Stay Agriculturally Informed</h2>
+              <p className="mt-4 text-gray-500">
+                Get expert farming tips, crop insights, and AI-powered recommendations to help you maximize your agricultural yield.
+              </p>
+            </div>
+
+            <div className="col-span-2 lg:col-span-3 lg:flex lg:items-end">
+              <form onSubmit={handleNewsletterSubmit} className="w-full">
+                <label htmlFor="UserEmail" className="sr-only">Email</label>
+                <div className="border border-gray-100 p-2 focus-within:ring-3 sm:flex sm:items-center sm:gap-4">
+                  <input
+                    type="email"
+                    id="UserEmail"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full border-none focus:border-transparent focus:ring-transparent sm:text-sm"
+                  />
+                  <button 
+                    type="submit"
+                    className="mt-1 w-full bg-green-600 px-6 py-3 text-sm font-bold tracking-wide text-white uppercase hover:bg-green-700 sm:mt-0 sm:w-auto transition-colors duration-200"
+                  >
+                    Subscribe
+                  </button>
                 </div>
-              ))}
+              </form>
             </div>
 
-            {/* Social Links */}
-            <div className="flex gap-4">
-              {socialLinks.map((social, index) => (
-                <a
-                  key={index}
-                  href={social.href}
-                  className="w-10 h-10 bg-gray-700 hover:bg-[#2E7D44] rounded-full flex items-center justify-center transition-colors duration-200"
-                  aria-label={social.name}
-                >
-                  <span className="text-lg">{social.icon}</span>
+            {/* Services */}
+            <div className="col-span-2 sm:col-span-1">
+              <p className="font-medium text-gray-900">Agricultural Services</p>
+              <ul className="mt-6 space-y-4 text-sm">
+                {footerLinks.services.map((link, index) => (
+                  <li key={index}>
+                    <a href={link.href} className="text-gray-700 hover:opacity-75 transition-opacity duration-200">
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div className="col-span-2 sm:col-span-1">
+              <p className="font-medium text-gray-900">Company</p>
+              <ul className="mt-6 space-y-4 text-sm">
+                {footerLinks.company.map((link, index) => (
+                  <li key={index}>
+                    <a href={link.href} className="text-gray-700 hover:opacity-75 transition-opacity duration-200">
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Resources */}
+            <div className="col-span-2 sm:col-span-1">
+              <p className="font-medium text-gray-900">Resources</p>
+              <ul className="mt-6 space-y-4 text-sm">
+                {footerLinks.resources.map((link, index) => (
+                  <li key={index}>
+                    <a href={link.href} className="text-gray-700 hover:opacity-75 transition-opacity duration-200">
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div className="col-span-2 sm:col-span-1">
+              <p className="font-medium text-gray-900">Legal</p>
+              <ul className="mt-6 space-y-4 text-sm">
+                {footerLinks.legal.map((link, index) => (
+                  <li key={index}>
+                    <a href={link.href} className="text-gray-700 hover:opacity-75 transition-opacity duration-200">
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Social Media */}
+            <ul className="col-span-2 flex justify-start gap-6 lg:col-span-5 lg:justify-end">
+              {/* Facebook */}
+              <li>
+                <a href="#" className="text-gray-700 hover:opacity-75 transition-opacity duration-200" aria-label="Facebook">
+                  <svg className="size-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
+                  </svg>
                 </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Product Links */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Product</h3>
-            <ul className="space-y-3">
-              {footerLinks.product.map((link, index) => (
-                <li key={index}>
-                  <a
-                    href={link.href}
-                    className="text-gray-300 hover:text-white transition-colors duration-200 text-sm"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company Links */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Company</h3>
-            <ul className="space-y-3">
-              {footerLinks.company.map((link, index) => (
-                <li key={index}>
-                  <a
-                    href={link.href}
-                    className="text-gray-300 hover:text-white transition-colors duration-200 text-sm"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Support Links */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Support</h3>
-            <ul className="space-y-3">
-              {footerLinks.support.map((link, index) => (
-                <li key={index}>
-                  <a
-                    href={link.href}
-                    className="text-gray-300 hover:text-white transition-colors duration-200 text-sm"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Legal Links */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Legal</h3>
-            <ul className="space-y-3">
-              {footerLinks.legal.map((link, index) => (
-                <li key={index}>
-                  <a
-                    href={link.href}
-                    className="text-gray-300 hover:text-white transition-colors duration-200 text-sm"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
+              </li>
+              {/* Instagram */}
+              <li>
+                <a href="#" className="text-gray-700 hover:opacity-75 transition-opacity duration-200" aria-label="Instagram">
+                  <svg className="size-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fillRule="evenodd" d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987s11.987-5.367 11.987-11.987C24.004 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.895 3.708 13.744 3.708 12.447s.49-2.448 1.418-3.323c.875-.807 2.026-1.297 3.323-1.297s2.448.49 3.323 1.297c.928.875 1.418 2.026 1.418 3.323s-.49 2.448-1.418 3.244c-.875.807-2.026 1.297-3.323 1.297zm7.83-9.781c-.49 0-.928-.175-1.297-.49-.368-.315-.49-.753-.49-1.243s.122-.928.49-1.243c.369-.315.807-.49 1.297-.49s.928.175 1.297.49c.368.315.49.753.49 1.243s-.122.928-.49 1.243c-.369.315-.807.49-1.297.49z" clipRule="evenodd" />
+                  </svg>
+                </a>
+              </li>
+              {/* LinkedIn */}
+              <li>
+                <a href="#" className="text-gray-700 hover:opacity-75 transition-opacity duration-200" aria-label="LinkedIn">
+                  <svg className="size-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fillRule="evenodd" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" clipRule="evenodd" />
+                  </svg>
+                </a>
+              </li>
             </ul>
           </div>
         </div>
 
-        {/* Newsletter Signup */}
-        <div className="mt-16 pt-8 border-t border-gray-700">
-          <div className="max-w-2xl mx-auto text-center">
-            <h3 className="text-xl font-semibold mb-4">Stay Updated with Farm-Connect</h3>
-            <p className="text-gray-300 mb-6">
-              Get the latest agricultural insights, tips, and platform updates delivered to your inbox.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                className="flex-1 px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2E7D44] focus:border-transparent text-white placeholder-gray-400"
-              />
-              <button className="btn-primary px-6 py-3 whitespace-nowrap">
-                Subscribe
-              </button>
-            </div>
-            <p className="text-xs text-gray-400 mt-3">
-              We respect your privacy. Unsubscribe at any time.
-            </p>
+        <div className="mt-8 border-t border-gray-100 pt-8">
+          <div className="sm:flex sm:justify-between">
+            <p className="text-xs text-gray-500">&copy; {currentYear} AgriAI. All rights reserved.</p>
+
+            <ul className="mt-8 flex flex-wrap justify-start gap-4 text-xs sm:mt-0 lg:justify-end">
+              <li>
+                <a href="#" className="text-gray-500 transition hover:opacity-75">Terms & Conditions</a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-500 transition hover:opacity-75">Privacy Policy</a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-500 transition hover:opacity-75">Cookies</a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
-
-      {/* Bottom Bar */}
-      <div className="border-t border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-gray-400 text-sm">
-              © {currentYear} Farm-Connect. All rights reserved.
-            </div>
-            
-            <div className="flex items-center gap-6 text-sm text-gray-400">
-              <span>🌍 Available in 15+ languages</span>
-              <span>🔒 Enterprise-grade security</span>
-              <span>☁️ Cloud-based platform</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Back to Top Button */}
-      <button
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="fixed bottom-6 left-6 w-12 h-12 bg-[#2E7D44] hover:bg-[#1e5a2f] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-40"
-        aria-label="Back to top"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-        </svg>
-      </button>
     </footer>
   );
 };
