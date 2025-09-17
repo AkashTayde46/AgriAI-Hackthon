@@ -413,8 +413,8 @@ const VoiceNavigator = () => {
   // Enhanced voice commands with fallback - COMPREHENSIVE
   const fallbackCommands = {
     // Greetings
-    "hello financial advisor": { type: 'greeting', response: "Welcome to Financial Advisor! I'm your AI assistant. How can I help you today? You can ask me to navigate to any page, get financial advice, or help you with calculations." },
-    "hello financial advisior": { type: 'greeting', response: "Welcome to Financial Advisor! I'm your AI assistant. How can I help you today? You can ask me to navigate to any page, get financial advice, or help you with calculations." },
+    "hello financial advisor": { type: 'greeting', response: "Welcome to AgriAI! I'm your AI assistant. How can I help you today? You can ask me to navigate to any page, get agricultural advice, or help you with calculations." },
+    "hello financial advisior": { type: 'greeting', response: "Welcome to AgriAI! I'm your AI assistant. How can I help you today? You can ask me to navigate to any page, get agricultural advice, or help you with calculations." },
     
     // Core Financial Tools
     "go to calculator": { type: 'navigate', path: '/ppf', response: "I'll take you to the financial calculator where you can calculate investments, PPF, and more." },
@@ -663,7 +663,7 @@ const VoiceNavigator = () => {
     
     // Enhanced welcome message
     setTimeout(() => {
-      const welcomeMessage = "Welcome to the Financial Advisor Platform. How can I help you navigate the pages?";
+      const welcomeMessage = "Welcome to the AgriAI Platform. How can I help you navigate the pages?";
       speakResponse(welcomeMessage);
       
       // Start command listening after speech with longer delay
@@ -1114,13 +1114,21 @@ const VoiceNavigator = () => {
       case "SCROLL_UP":
         console.log('🎤 Scrolling up');
         speakResponse("Scrolling up.");
-        window.scrollBy(0, -300);
+        try {
+          window.scrollBy(0, -300);
+        } catch (error) {
+          console.warn('Could not scroll up:', error);
+        }
         break;
         
       case "SCROLL_DOWN":
         console.log('🎤 Scrolling down');
         speakResponse("Scrolling down.");
-        window.scrollBy(0, 300);
+        try {
+          window.scrollBy(0, 300);
+        } catch (error) {
+          console.warn('Could not scroll down:', error);
+        }
         break;
         
       case "SEARCH":
@@ -1958,7 +1966,7 @@ const VoiceNavigator = () => {
                 Say any of these to start the voice assistant:
               </div>
               <div className="space-y-1">
-                {["Hello Fin Advisor", "Hello Financial Advisor", "Hi Fin Advisor", "Hey Fin Advisor"].map((wakeWord, index) => (
+                {["Hello AgriAI", "Hello Agricultural AI", "Hi AgriAI", "Hey AgriAI"].map((wakeWord, index) => (
                   <span key={index} className="block text-xs bg-green-50 px-2 py-1 rounded border text-green-700">
                     "{wakeWord}"
                   </span>

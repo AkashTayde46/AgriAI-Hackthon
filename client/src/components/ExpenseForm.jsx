@@ -1,175 +1,247 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { Plus, Calendar, DollarSign, Tag, FileText, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
-function ExpenseForm({ addTransaction, transactionType = 'expense' }) {
+const TransactionForm = ({ addTransaction, categories }) => {
     const [transactionInfo, setTransactionInfo] = useState({
+        type: 'expense',
         amount: '',
+        date: new Date().toISOString().split('T')[0],
+        category: '',
+        notes: '',
         text: ''
     });
+
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+    const handleChange = (field, value) => {
         setTransactionInfo(prev => ({
             ...prev,
-            [name]: value
+            [field]: value
         }));
-    }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        console.log('🔍 ExpenseForm - Form data before submission:', transactionInfo);
-        
-        const { amount, text } = transactionInfo;
-        
-        // Client-side validation
-        if (!text.trim()) {
-            alert('Please enter a transaction description');
+        // Validation
+        if (!transactionInfo.text.trim()) {
+            alert('Please enter a description');
             return;
         }
-
-        if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) === 0) {
-            alert('Please enter a valid non-zero amount');
+        if (!transactionInfo.amount || parseFloat(transactionInfo.amount) <= 0) {
+            alert('Please enter a valid amount');
             return;
         }
-
-        console.log('🔍 ExpenseForm - Amount before API call:', {
-            originalAmount: amount,
-            parsedAmount: parseFloat(amount),
-            type: typeof parseFloat(amount)
-        });
+        if (!transactionInfo.category) {
+            alert('Please select a category');
+            return;
+        }
 
         setIsSubmitting(true);
         
         try {
-            await addTransaction(transactionInfo);
-            // Clear form only on successful submission
-            setTransactionInfo({ amount: '', text: '' });
+            await addTransaction({
+                ...transactionInfo,
+                amount: parseFloat(transactionInfo.amount)
+            });
+            
+            // Reset form
+            setTransactionInfo({
+                type: 'expense',
+                amount: '',
+                date: new Date().toISOString().split('T')[0],
+                category: '',
+                notes: '',
+                text: ''
+            });
+            
+            alert('Transaction added successfully!');
         } catch (error) {
-            console.error('Form submission error:', error);
+            console.error('Error adding transaction:', error);
+            alert('Failed to add transaction. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
-    }
+    };
 
-    const isIncome = transactionType === 'income';
+    // Filter categories based on transaction type
+    const filteredCategories = categories.filter(cat => {
+        if (transactionInfo.type === 'income') {
+            return ['Salary', 'Freelance', 'Business', 'Investment', 'Bonus', 'Other Income'].includes(cat);
+        } else {
+            return ['Food & Dining', 'Transportation', 'Housing', 'Utilities', 'Healthcare', 
+                   'Entertainment', 'Shopping', 'Education', 'Travel', 'Insurance', 'Other'].includes(cat);
+        }
+    });
+
+    const isIncome = transactionInfo.type === 'income';
 
     return (
-        <div className="space-y-6">
-            <div className="text-center mb-6">
-                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-full mb-3 ${
-                    isIncome 
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-600' 
-                        : 'bg-gradient-to-r from-green-600 to-teal-600'
-                }`}>
-                    <span className="text-white text-xl">
-                        {isIncome ? '💰' : '💸'}
-                    </span>
-                </div>
-                <h3 className={`text-lg font-semibold ${
-                    isIncome ? 'text-green-700' : 'text-green-700'
-                }`}>
-                    {isIncome ? 'Add Income' : 'Add Expense'}
-                </h3>
-            </div>
-            
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label htmlFor='text' className="block text-sm font-medium text-gray-700 mb-2">
-                        Description *
-                    </label>
-                    <input 
-                        onChange={handleChange}
-                        type='text' 
-                        name='text' 
-                        id='text'
-                        placeholder={isIncome ? 'e.g., Salary, Freelance, Bonus' : 'e.g., Groceries, Rent, Utilities'} 
-                        value={transactionInfo.text}
-                        disabled={isSubmitting}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200 placeholder-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                        maxLength={200}
-                        required
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                        {transactionInfo.text.length}/200 characters
-                    </p>
+        <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-gradient-to-r from-green-500 to-green-600">
+                        <Plus className="h-8 w-8 text-white" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900">Add New Transaction</h2>
+                    <p className="text-gray-600 mt-2">Enter the details of your transaction</p>
                 </div>
 
-                <div>
-                    <label htmlFor='amount' className="block text-sm font-medium text-gray-700 mb-2">
-                        Amount (₹) *
-                    </label>
-                    <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
-                        <input 
-                            onChange={handleChange}
-                            type='number' 
-                            name='amount' 
-                            id='amount'
-                            placeholder='0.00' 
-                            value={transactionInfo.amount}
-                            disabled={isSubmitting}
-                            className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200 placeholder-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                            step="0.01"
-                            min="0"
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Transaction Type Toggle */}
+                    <div className="flex items-center justify-center p-1 bg-gray-100 rounded-lg">
+                        <button
+                            type="button"
+                            onClick={() => handleChange('type', 'expense')}
+                            className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                                !isIncome 
+                                    ? 'bg-white text-red-600 shadow-sm' 
+                                    : 'text-gray-600 hover:text-gray-900'
+                            }`}
+                        >
+                            <ArrowDownRight className="h-4 w-4" />
+                            <span>Expense</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => handleChange('type', 'income')}
+                            className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                                isIncome 
+                                    ? 'bg-white text-green-600 shadow-sm' 
+                                    : 'text-gray-600 hover:text-gray-900'
+                            }`}
+                        >
+                            <ArrowUpRight className="h-4 w-4" />
+                            <span>Income</span>
+                        </button>
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <FileText className="inline h-4 w-4 mr-1" />
+                            Description *
+                        </label>
+                        <input
+                            type="text"
+                            value={transactionInfo.text}
+                            onChange={(e) => handleChange('text', e.target.value)}
+                            placeholder={`Enter ${isIncome ? 'income' : 'expense'} description`}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
                             required
                         />
                     </div>
-                </div>
 
-                <button 
-                    type='submit'
-                    disabled={isSubmitting || !transactionInfo.text.trim() || !transactionInfo.amount}
-                    className={`w-full font-semibold py-3 px-6 rounded-xl transition duration-200 transform hover:scale-105 disabled:hover:scale-100 shadow-lg flex items-center justify-center ${
-                        isIncome
-                            ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-500 text-white'
-                            : 'bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 disabled:from-gray-400 disabled:to-gray-500 text-white'
-                    } disabled:cursor-not-allowed`}
-                >
-                    {isSubmitting ? (
-                        <>
-                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Adding...
-                        </>
-                    ) : (
-                        <>
-                            <span className="mr-2">{isIncome ? '➕' : '➖'}</span>
-                            Add {isIncome ? 'Income' : 'Expense'}
-                        </>
-                    )}
-                </button>
-            </form>
+                    {/* Amount */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <DollarSign className="inline h-4 w-4 mr-1" />
+                            Amount (₹) *
+                        </label>
+                        <input
+                            type="number"
+                            value={transactionInfo.amount}
+                            onChange={(e) => handleChange('amount', e.target.value)}
+                            placeholder="0.00"
+                            step="0.01"
+                            min="0.01"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                            required
+                        />
+                    </div>
 
-            <div className="space-y-3">
-                <div className={`p-4 rounded-xl ${
-                    isIncome 
-                        ? 'bg-green-50 border border-green-200' 
-                        : 'bg-green-50 border border-green-200'
-                }`}>
-                    <p className={`text-sm ${
-                        isIncome ? 'text-green-700' : 'text-green-700'
-                    }`}>
-                        💡 <strong>Tip:</strong> {isIncome 
-                            ? 'Record all your income sources including salary, bonuses, and side hustles' 
-                            : 'Track all your expenses to understand your spending patterns'
-                        }
-                    </p>
-                </div>
-                
-                <div className="p-4 bg-gray-50 rounded-xl">
-                    <p className="text-sm text-gray-600">
-                        📝 <strong>Examples:</strong> {isIncome 
-                            ? 'Salary (₹50000), Freelance (₹15000), Bonus (₹25000)' 
-                            : 'Groceries (₹1200), Rent (₹25000), Utilities (₹800)'
-                        }
-                    </p>
+                    {/* Date and Category Row */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Date */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <Calendar className="inline h-4 w-4 mr-1" />
+                                Date *
+                            </label>
+                            <input
+                                type="date"
+                                value={transactionInfo.date}
+                                onChange={(e) => handleChange('date', e.target.value)}
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                                required
+                            />
+                        </div>
+
+                        {/* Category */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <Tag className="inline h-4 w-4 mr-1" />
+                                Category *
+                            </label>
+                            <select
+                                value={transactionInfo.category}
+                                onChange={(e) => handleChange('category', e.target.value)}
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                                required
+                            >
+                                <option value="">Select category</option>
+                                {filteredCategories.map((category) => (
+                                    <option key={category} value={category}>{category}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Notes */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <FileText className="inline h-4 w-4 mr-1" />
+                            Notes (Optional)
+                        </label>
+                        <textarea
+                            value={transactionInfo.notes}
+                            onChange={(e) => handleChange('notes', e.target.value)}
+                            placeholder="Add any additional notes..."
+                            rows={3}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors resize-none"
+                        />
+                    </div>
+
+                    {/* Submit Button */}
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all ${
+                            isSubmitting
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : isIncome
+                                    ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                                    : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
+                        }`}
+                    >
+                        {isSubmitting ? (
+                            <div className="flex items-center justify-center space-x-2">
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                <span>Adding Transaction...</span>
+                            </div>
+                        ) : (
+                            <div className="flex items-center justify-center space-x-2">
+                                <Plus className="h-4 w-4" />
+                                <span>Add {isIncome ? 'Income' : 'Expense'}</span>
+                            </div>
+                        )}
+                    </button>
+                </form>
+
+                {/* Quick Tips */}
+                <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 className="font-semibold text-blue-800 mb-2">💡 Quick Tips</h4>
+                    <ul className="text-sm text-blue-700 space-y-1">
+                        <li>• Use clear, descriptive names for better tracking</li>
+                        <li>• Categorize transactions accurately for better insights</li>
+                        <li>• Add notes for important transactions</li>
+                        <li>• Regular categorization helps with financial planning</li>
+                    </ul>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default ExpenseForm
+export default TransactionForm;

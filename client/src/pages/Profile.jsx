@@ -1,348 +1,292 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   User, 
   Mail, 
+  Phone, 
+  MapPin, 
   Calendar, 
-  ArrowLeft, 
-  Edit, 
+  Edit3, 
   Save, 
   X, 
-  MapPin, 
-  Globe, 
-  DollarSign, 
-  Users, 
+  Camera,
   Shield, 
-  CheckCircle,
-  Clock,
-  Star,
-  TrendingUp
+  Settings,
+  LogOut,
+  ArrowLeft,
+  BadgeDollarSign,
+  Loader2
 } from 'lucide-react';
-import { useAuthState, setAuthState } from '../hooks/useAuthState';
-import NavBar from '../components/NavBar';
-import { toast } from 'react-toastify';
+import AuthContext from '../Authorisation/AuthProvider';
+import DashboardNav from '../components/DashboardNav';
 import axios from 'axios';
-
-// Move ProfileField component outside to prevent recreation on every render
-const ProfileField = React.memo(({ icon: Icon, label, value, isEditing, field, type = "text", placeholder, min, max, formatDisplay, onInputChange }) => (
-  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
-    <div className="flex items-center space-x-4">
-      <div className="flex-shrink-0">
-        <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
-          <Icon className="w-6 h-6 text-white" />
-        </div>
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-500 mb-1">{label}</p>
-        {isEditing ? (
-          <input
-            key={`${field}-input`}
-            type={type}
-            value={value}
-            onChange={(e) => onInputChange(field, e.target.value)}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
-            placeholder={placeholder}
-            min={min}
-            max={max}
-          />
-        ) : (
-          <p className="text-lg font-semibold text-gray-900">
-            {formatDisplay ? formatDisplay(value) : (value || 'Not specified')}
-          </p>
-        )}
-      </div>
-    </div>
-  </div>
-));
-
-
+import { toast } from 'react-toastify';
+import { getAuthData } from '../utils/authUtils';
 
 const Profile = () => {
-  const navigate = useNavigate();
-  const { user } = useAuthState();
+  const { user, logout } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [editedUser, setEditedUser] = useState({
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [profileData, setProfileData] = useState(null);
+  const [formData, setFormData] = useState({
     name: '',
     email: '',
-    age: '',
+    phone: '',
     location: '',
-    language: '',
-    monthlyIncome: '',
-    familySize: ''
+    farmSize: '',
+    crops: '',
+    experience: '',
+    bio: ''
   });
 
-  const isInitialized = useRef(false);
-
-  // Initialize editedUser when user data is first available
+  // Fetch profile data on component mount
   useEffect(() => {
-    if (user && !isInitialized.current) {
-      setEditedUser({
-        name: user.name || '',
-        email: user.email || '',
-        age: user.age || '',
-        location: user.location || '',
-        language: user.language || '',
-        monthlyIncome: user.monthlyIncome || '',
-        familySize: user.familySize || ''
-      });
-      isInitialized.current = true;
-    }
-  }, [user]);
-
-  const handleInputChange = useCallback((field, value) => {
-    // Handle empty values properly
-    const processedValue = value === '' ? '' : value;
-    
-    setEditedUser(prev => ({
-      ...prev,
-      [field]: processedValue
-    }));
+    fetchProfileData();
   }, []);
 
-  if (!user) {
-    navigate('/login');
-    return null;
-  }
-
-  const handleEditToggle = () => {
-    if (isEditing) {
-      handleSaveChanges();
-    } else {
-      // Reset to current user data when starting to edit
-      setEditedUser({
-        name: user.name || '',
-        email: user.email || '',
-        age: user.age || '',
-        location: user.location || '',
-        language: user.language || '',
-        monthlyIncome: user.monthlyIncome || '',
-        familySize: user.familySize || ''
-      });
-      setIsEditing(true);
-    }
-  };
-
-  const handleSaveChanges = async () => {
+  const fetchProfileData = async () => {
     try {
-      setIsLoading(true);
-      const loadingToast = toast.loading('Updating profile...', {
-        position: "top-center",
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-      });
-
-      // Prepare the data with proper validation
-      const updateData = {
-        name: editedUser.name?.trim() || '',
-        email: editedUser.email?.trim() || ''
-      };
-
-      // Only add optional fields if they have valid values
-      if (editedUser.age && !isNaN(editedUser.age)) {
-        updateData.age = parseInt(editedUser.age);
-      }
-      if (editedUser.location?.trim()) {
-        updateData.location = editedUser.location.trim();
-      }
-      if (editedUser.language?.trim()) {
-        updateData.language = editedUser.language.trim();
-      }
-      if (editedUser.monthlyIncome && !isNaN(editedUser.monthlyIncome)) {
-        updateData.monthlyIncome = parseInt(editedUser.monthlyIncome);
-      }
-      if (editedUser.familySize && !isNaN(editedUser.familySize)) {
-        updateData.familySize = parseInt(editedUser.familySize);
+      setLoading(true);
+      const authData = getAuthData();
+      const token = authData.token;
+      
+      if (!token) {
+        toast.error('No authentication token found');
+        return;
       }
 
-      const response = await axios.put(
-        'http://localhost:8080/api/auth/profile',
-        updateData,
-        { withCredentials: true }
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/user/profile`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
 
       if (response.data.success) {
-        toast.dismiss(loadingToast);
-        toast.success('Profile updated successfully! 🎉', {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
+        const userData = response.data.user;
+        setProfileData(userData);
+        setFormData({
+          name: userData.name || '',
+          email: userData.email || '',
+          phone: userData.phone || '',
+          location: userData.location || '',
+          farmSize: userData.farmSize || '',
+          crops: userData.crops || '',
+          experience: userData.experience || '',
+          bio: userData.bio || ''
         });
-        
-        setAuthState({
-          user: response.data.user,
-          isAuthenticated: true,
-          loading: false
-        });
-        
-        // Update editedUser with the new data from server
-        setEditedUser({
-          name: response.data.user.name || '',
-          email: response.data.user.email || '',
-          age: response.data.user.age || '',
-          location: response.data.user.location || '',
-          language: response.data.user.language || '',
-          monthlyIncome: response.data.user.monthlyIncome || '',
-          familySize: response.data.user.familySize || ''
-        });
-        
-        setIsEditing(false);
       }
     } catch (error) {
-      console.error('Profile update error:', error);
-      toast.dismiss();
-      let errorMessage = 'Failed to update profile. Please try again.';
-      
-      if (error.response) {
-        const status = error.response.status;
-        const data = error.response.data;
-        switch (status) {
-          case 400: errorMessage = data.message || 'Please check your input and try again.'; break;
-          case 401: errorMessage = 'Session expired. Please login again.'; break;
-          case 404: errorMessage = 'User not found.'; break;
-          case 500: errorMessage = 'Server error. Please try again later.'; break;
-          default: errorMessage = data.message || 'Something went wrong. Please try again.';
-        }
-      } else if (error.request) { 
-        errorMessage = 'Network error. Please check your internet connection.'; 
+      console.error('Error fetching profile data:', error);
+      if (error.response?.status === 401) {
+        toast.error('Session expired. Please login again.');
+        logout();
+    } else {
+        toast.error('Failed to load profile data');
+        // Set fallback data from context
+        setFormData({
+          name: user?.name || '',
+          email: user?.email || '',
+          phone: user?.phone || '',
+          location: user?.location || '',
+          farmSize: user?.farmSize || '',
+          crops: user?.crops || '',
+          experience: user?.experience || '',
+          bio: user?.bio || ''
+        });
       }
-      
-      toast.error(errorMessage, {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    // Reset to current user data when canceling
-    setEditedUser({
-      name: user.name || '',
-      email: user.email || '',
-      age: user.age || '',
-      location: user.location || '',
-      language: user.language || '',
-      monthlyIncome: user.monthlyIncome || '',
-      familySize: user.familySize || ''
-    });
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
-      <NavBar />
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      const authData = getAuthData();
+      const token = authData.token;
       
-      <div className="pt-20 px-4 pb-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header Section */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => navigate(-1)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 text-gray-700 hover:text-green-600"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                  <span>Back</span>
-                </button>
-                <div>
-                  <h1 className="text-4xl font-bold text-gray-900">Profile</h1>
-                  <p className="text-gray-600 mt-1">Manage your account information</p>
-                </div>
+      if (!token) {
+        toast.error('No authentication token found');
+        return;
+      }
+
+      const response = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/user/profile`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.data.success) {
+        setProfileData(response.data.user);
+        toast.success('Profile updated successfully! 🎉');
+        setIsEditing(false);
+      } else {
+        toast.error('Failed to update profile');
+      }
+    } catch (error) {
+      console.error('Error saving profile data:', error);
+      if (error.response?.status === 401) {
+        toast.error('Session expired. Please login again.');
+        logout();
+      } else if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('Failed to save profile data');
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setFormData({
+      name: profileData?.name || user?.name || '',
+      email: profileData?.email || user?.email || '',
+      phone: profileData?.phone || user?.phone || '',
+      location: profileData?.location || user?.location || '',
+      farmSize: profileData?.farmSize || user?.farmSize || '',
+      crops: profileData?.crops || user?.crops || '',
+      experience: profileData?.experience || user?.experience || '',
+      bio: profileData?.bio || user?.bio || ''
+    });
+    setIsEditing(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+  };
+
+  // Show loading spinner while fetching data
+  if (loading) {
+  return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-green-600 animate-spin mx-auto mb-4" />
+          <p className="text-lg text-gray-600">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+      <DashboardNav />
+      
+      <div className="max-w-4xl mx-auto px-4 py-8 pt-24">
+        {/* Profile Header */}
+        <div className="bg-white rounded-2xl shadow-xl border border-green-100 p-8 mb-8">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+            {/* Profile Picture */}
+            <div className="relative">
+              <div className="w-32 h-32 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                <span className="text-white font-bold text-4xl">
+                  {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                </span>
               </div>
-              
+              {isEditing && (
+                <button className="absolute bottom-0 right-0 bg-green-600 text-white p-2 rounded-full shadow-lg hover:bg-green-700 transition-colors">
+                  <Camera className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Profile Info */}
+            <div className="flex-1 text-center md:text-left">
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full bg-transparent border-b-2 border-green-500 text-3xl font-bold text-gray-800 focus:outline-none"
+                  />
+                ) : (
+                  formData.name || 'User Name'
+                )}
+              </h1>
+              <p className="text-green-600 text-lg mb-4">
+                {isEditing ? (
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full bg-transparent border-b-2 border-green-500 text-green-600 text-lg focus:outline-none"
+                  />
+                ) : (
+                  formData.email || 'user@example.com'
+                )}
+              </p>
+              <p className="text-gray-600 mb-6">
+                {isEditing ? (
+                  <textarea
+                    name="bio"
+                    value={formData.bio}
+                    onChange={handleInputChange}
+                    placeholder="Tell us about yourself..."
+                    className="w-full bg-transparent border-2 border-green-200 rounded-lg p-3 text-gray-600 focus:outline-none focus:border-green-500 resize-none"
+                    rows="3"
+                  />
+                ) : (
+                  formData.bio || 'Passionate farmer dedicated to sustainable agriculture and innovation.'
+                )}
+              </p>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                {isEditing ? (
+                  <>
               <button
-                onClick={handleEditToggle}
-                disabled={isLoading}
-                className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 ${
-                  isEditing 
-                    ? 'bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-xl' 
-                    : 'bg-white text-gray-700 hover:text-green-600 border border-gray-200 hover:border-green-300 shadow-sm hover:shadow-md'
-                } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {isLoading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Saving...</span>
-                  </>
-                ) : isEditing ? (
-                  <>
-                    <Save className="w-5 h-5" />
-                    <span>Save Changes</span>
+                      onClick={handleSave}
+                      disabled={saving}
+                      className="inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {saving ? (
+                        <>
+                          <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                          Saving...
                   </>
                 ) : (
                   <>
-                    <Edit className="w-5 h-5" />
-                    <span>Edit Profile</span>
+                          <Save className="w-5 h-5 mr-2" />
+                          Save Changes
                   </>
                 )}
               </button>
-            </div>
-          </div>
-
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Main Profile Card */}
-            <div className="lg:col-span-2">
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-                {/* Profile Header */}
-                <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 p-8 text-white relative overflow-hidden">
-                  <div className="absolute inset-0 bg-black opacity-10"></div>
-                  <div className="relative z-10">
-                    <div className="flex items-center space-x-6">
-                      <div className="relative">
-                        <div className="w-24 h-24 rounded-full border-4 border-white shadow-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-                          <span className="text-white text-3xl font-bold">
-                            {(isEditing ? editedUser.name : user.name)?.charAt(0).toUpperCase() || 'U'}
-                          </span>
-                        </div>
-                        <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-green-400 rounded-full border-4 border-white flex items-center justify-center">
-                          <CheckCircle className="w-4 h-4 text-white" />
-                        </div>
-                      </div>
-                      <div className="flex-1">
-                        {isEditing ? (
-                          <div className="space-y-3">
-                            <input
-                              key="header-name-input"
-                              type="text"
-                              value={editedUser.name}
-                              onChange={(e) => handleInputChange('name', e.target.value)}
-                              className="text-3xl font-bold bg-white/20 rounded-lg px-4 py-2 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur-sm"
-                              placeholder="Enter your name"
-                            />
-                            <div className="flex items-center space-x-4">
-                              <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm">
-                                FinAdvise Member
-                              </span>
-                              <span className="bg-white/20 px-3 py-1 rounded-full text-sm backdrop-blur-sm">
-                                <Clock className="w-4 h-4 inline mr-1" />
-                                Member since {new Date(user.createdAt || Date.now()).toLocaleDateString()}
-                              </span>
-                            </div>
-                          </div>
-                        ) : (
-                          <div>
-                            <h2 className="text-3xl font-bold mb-2">{user.name}</h2>
-                            <div className="flex items-center space-x-4">
-                              <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm">
-                                FinAdvise Member
-                              </span>
-                              <span className="bg-white/20 px-3 py-1 rounded-full text-sm backdrop-blur-sm">
-                                <Clock className="w-4 h-4 inline mr-1" />
-                                Member since {new Date(user.createdAt || Date.now()).toLocaleDateString()}
-                              </span>
-                            </div>
-                          </div>
+                    <button
+                      onClick={handleCancel}
+                      className="inline-flex items-center justify-center px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors duration-200"
+                    >
+                      <X className="w-5 h-5 mr-2" />
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors duration-200"
+                  >
+                    <Edit3 className="w-5 h-5 mr-2" />
+                    Edit Profile
+                  </button>
                         )}
                       </div>
                     </div>
@@ -350,222 +294,152 @@ const Profile = () => {
                 </div>
 
                 {/* Profile Details */}
-                <div className="p-8">
-                  <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Personal Information */}
-                    <div className="space-y-6">
-                      <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
-                        <User className="w-6 h-6 text-green-600" />
-                        <span>Personal Information</span>
-                      </h3>
-                      
-                      <ProfileField
-                        key="name-field"
-                        icon={User}
-                        label="Full Name"
-                        value={isEditing ? editedUser.name : user.name}
-                        isEditing={isEditing}
-                        field="name"
-                        placeholder="Enter your full name"
-                        onInputChange={handleInputChange}
-                      />
-
-                      <ProfileField
-                        key="age-field"
-                        icon={Calendar}
-                        label="Age"
-                        value={isEditing ? editedUser.age : user.age}
-                        isEditing={isEditing}
-                        field="age"
-                        type="number"
-                        placeholder="Enter your age"
-                        min="1"
-                        max="120"
-                        formatDisplay={(value) => value ? `${value} years` : 'Not specified'}
-                        onInputChange={handleInputChange}
-                      />
-
-                      <ProfileField
-                        key="location-field"
-                        icon={MapPin}
-                        label="Location"
-                        value={isEditing ? editedUser.location : user.location}
-                        isEditing={isEditing}
-                        field="location"
-                        placeholder="Enter your location"
-                        onInputChange={handleInputChange}
-                      />
-
-                      <ProfileField
-                        key="language-field"
-                        icon={Globe}
-                        label="Language"
-                        value={isEditing ? editedUser.language : user.language}
-                        isEditing={isEditing}
-                        field="language"
-                        placeholder="Enter your preferred language"
-                        onInputChange={handleInputChange}
-                      />
-                    </div>
-
-                    {/* Financial Information */}
-                    <div className="space-y-6">
-                      <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
-                        <TrendingUp className="w-6 h-6 text-green-600" />
-                        <span>Financial Information</span>
-                      </h3>
-
-                      <ProfileField
-                        key="monthlyIncome-field"
-                        icon={DollarSign}
-                        label="Monthly Income (₹)"
-                        value={isEditing ? editedUser.monthlyIncome : user.monthlyIncome}
-                        isEditing={isEditing}
-                        field="monthlyIncome"
-                        type="number"
-                        placeholder="Enter monthly income"
-                        min="0"
-                        formatDisplay={(value) => value ? `₹${parseInt(value).toLocaleString()}` : 'Not specified'}
-                        onInputChange={handleInputChange}
-                      />
-
-                      <ProfileField
-                        key="familySize-field"
-                        icon={Users}
-                        label="Family Size"
-                        value={isEditing ? editedUser.familySize : user.familySize}
-                        isEditing={isEditing}
-                        field="familySize"
-                        type="number"
-                        placeholder="Enter family size"
-                        min="1"
-                        max="20"
-                        formatDisplay={(value) => value ? `${value} members` : 'Not specified'}
-                        onInputChange={handleInputChange}
-                      />
-
-                      <ProfileField
-                        key="email-field"
-                        icon={Mail}
-                        label="Email Address"
-                        value={isEditing ? editedUser.email : user.email}
-                        isEditing={isEditing}
-                        field="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        onInputChange={handleInputChange}
-                      />
-
-                      {user.username && (
-                        <ProfileField
-                          key="username-field"
-                          icon={User}
-                          label="Username"
-                          value={`@${user.username}`}
-                          isEditing={false}
-                          field="username"
-                          onInputChange={handleInputChange}
-                        />
+          <div className="bg-white rounded-2xl shadow-xl border border-green-100 p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+              <User className="w-6 h-6 mr-3 text-green-600" />
+              Personal Information
+            </h2>
+            
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Phone className="w-5 h-5 text-green-600" />
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  {isEditing ? (
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full border-2 border-green-200 rounded-lg p-2 focus:outline-none focus:border-green-500"
+                      placeholder="Enter phone number"
+                    />
+                  ) : (
+                    <p className="text-gray-600">{formData.phone || 'Not provided'}</p>
                       )}
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
-                  {isEditing && (
-                    <div className="mt-8 pt-6 border-t border-gray-200">
-                      <div className="flex flex-wrap gap-4">
-                        <button 
-                          onClick={handleSaveChanges}
-                          disabled={isLoading}
-                          className="px-8 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-200 flex items-center space-x-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {isLoading ? (
-                            <>
-                              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                              <span>Saving...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Save className="w-5 h-5" />
-                              <span>Save Changes</span>
-                            </>
-                          )}
-                        </button>
-                        <button 
-                          onClick={handleCancelEdit}
-                          disabled={isLoading}
-                          className="px-8 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          <X className="w-5 h-5" />
-                          <span>Cancel</span>
-                        </button>
+              <div className="flex items-center gap-3">
+                <MapPin className="w-5 h-5 text-green-600" />
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleInputChange}
+                      className="w-full border-2 border-green-200 rounded-lg p-2 focus:outline-none focus:border-green-500"
+                      placeholder="Enter your location"
+                    />
+                  ) : (
+                    <p className="text-gray-600">{formData.location || 'Not provided'}</p>
+                  )}
                       </div>
                     </div>
+
+              <div className="flex items-center gap-3">
+                <Calendar className="w-5 h-5 text-green-600" />
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Farming Experience</label>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      name="experience"
+                      value={formData.experience}
+                      onChange={handleInputChange}
+                      className="w-full border-2 border-green-200 rounded-lg p-2 focus:outline-none focus:border-green-500"
+                      placeholder="e.g., 5 years"
+                    />
+                  ) : (
+                    <p className="text-gray-600">{formData.experience || 'Not provided'}</p>
                   )}
                 </div>
               </div>
             </div>
-
-            {/* Sidebar */}
-            <div className="space-y-6">
-              {/* Account Stats */}
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
-                  <Shield className="w-6 h-6 text-green-600" />
-                  <span>Account Status</span>
-                </h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-green-50 rounded-xl border border-green-200">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="font-medium text-gray-900">Account Status</span>
-                    </div>
-                    <span className="text-green-600 font-semibold">Active</span>
                   </div>
                   
-                  <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl border border-blue-200">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                      <span className="font-medium text-gray-900">Email Verification</span>
-                    </div>
-                    <span className={`font-semibold ${user.isEmailVerified ? 'text-green-600' : 'text-orange-600'}`}>
-                      {user.isEmailVerified ? 'Verified' : 'Pending'}
-                    </span>
+          {/* Farm Information */}
+          <div className="bg-white rounded-2xl shadow-xl border border-green-100 p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+              <Shield className="w-6 h-6 mr-3 text-green-600" />
+              Farm Information
+            </h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Farm Size</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="farmSize"
+                    value={formData.farmSize}
+                    onChange={handleInputChange}
+                    className="w-full border-2 border-green-200 rounded-lg p-2 focus:outline-none focus:border-green-500"
+                    placeholder="e.g., 10 acres"
+                  />
+                ) : (
+                  <p className="text-gray-600">{formData.farmSize || 'Not provided'}</p>
+                )}
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-purple-50 rounded-xl border border-purple-200">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                      <span className="font-medium text-gray-900">Last Login</span>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Main Crops</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="crops"
+                    value={formData.crops}
+                    onChange={handleInputChange}
+                    className="w-full border-2 border-green-200 rounded-lg p-2 focus:outline-none focus:border-green-500"
+                    placeholder="e.g., Wheat, Rice, Corn"
+                  />
+                ) : (
+                  <p className="text-gray-600">{formData.crops || 'Not provided'}</p>
+                )}
                     </div>
-                    <span className="text-gray-600 text-sm">
-                      {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}
-                    </span>
                   </div>
                 </div>
               </div>
 
-              {/* Quick Actions */}
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
-                  <Star className="w-6 h-6 text-green-600" />
-                  <span>Quick Actions</span>
-                </h3>
-                <div className="space-y-3">
-                  <button className="w-full px-4 py-3 text-left bg-gray-50 hover:bg-gray-100 rounded-xl transition-all duration-200 flex items-center space-x-3">
-                    <Shield className="w-5 h-5 text-gray-600" />
-                    <span className="font-medium text-gray-900">Privacy Settings</span>
-                  </button>
-                  <button className="w-full px-4 py-3 text-left bg-gray-50 hover:bg-gray-100 rounded-xl transition-all duration-200 flex items-center space-x-3">
-                    <User className="w-5 h-5 text-gray-600" />
-                    <span className="font-medium text-gray-900">Change Password</span>
-                  </button>
-                  <button className="w-full px-4 py-3 text-left bg-gray-50 hover:bg-gray-100 rounded-xl transition-all duration-200 flex items-center space-x-3">
-                    <Mail className="w-5 h-5 text-gray-600" />
-                    <span className="font-medium text-gray-900">Email Preferences</span>
-                  </button>
+        {/* Account Settings */}
+        <div className="bg-white rounded-2xl shadow-xl border border-green-100 p-6 mt-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <Settings className="w-6 h-6 mr-3 text-green-600" />
+            Account Settings
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-700">Security</h3>
+              <button className="w-full text-left p-4 border-2 border-green-200 rounded-lg hover:border-green-500 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-800">Change Password</p>
+                    <p className="text-sm text-gray-600">Update your account password</p>
+                  </div>
+                  <Settings className="w-5 h-5 text-green-600" />
                 </div>
-              </div>
+                  </button>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-700">Account Actions</h3>
+              <button 
+                onClick={handleLogout}
+                className="w-full text-left p-4 border-2 border-red-200 rounded-lg hover:border-red-500 transition-colors"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-red-800">Sign Out</p>
+                    <p className="text-sm text-gray-600">Sign out of your account</p>
+                  </div>
+                  <LogOut className="w-5 h-5 text-red-600" />
+                </div>
+                  </button>
             </div>
           </div>
         </div>

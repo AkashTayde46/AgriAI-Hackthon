@@ -42,6 +42,32 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  // Profile fields
+  phone: {
+    type: String,
+    trim: true
+  },
+  location: {
+    type: String,
+    trim: true
+  },
+  farmSize: {
+    type: String,
+    trim: true
+  },
+  crops: {
+    type: String,
+    trim: true
+  },
+  experience: {
+    type: String,
+    trim: true
+  },
+  bio: {
+    type: String,
+    trim: true,
+    maxlength: 500
+  },
   createdAt: {
     type: Date,
     default: Date.now
