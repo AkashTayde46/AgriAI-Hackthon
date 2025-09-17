@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Smartphone, Globe, MessageCircle, Phone } from 'lucide-react';
 
 const TechnologySection = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('en');
@@ -23,10 +24,38 @@ const TechnologySection = () => {
   ];
 
   const platforms = [
-    { name: 'Mobile App', icon: '📱', description: 'Native iOS and Android apps' },
-    { name: 'Web Platform', icon: '🌐', description: 'Access from any browser' },
-    { name: 'WhatsApp', icon: '💬', description: 'Chat directly on WhatsApp' },
-    { name: 'IVR System', icon: '📞', description: 'Voice calls for offline access' }
+    { 
+      name: 'Mobile App', 
+      icon: <Smartphone className="w-8 h-8" />, 
+      description: 'Native iOS and Android apps',
+      color: 'from-purple-500 to-pink-500',
+      bgColor: 'bg-purple-50',
+      textColor: 'text-purple-600'
+    },
+    { 
+      name: 'Web Platform', 
+      icon: <Globe className="w-8 h-8" />, 
+      description: 'Access from any browser',
+      color: 'from-blue-500 to-cyan-500',
+      bgColor: 'bg-blue-50',
+      textColor: 'text-blue-600'
+    },
+    { 
+      name: 'WhatsApp', 
+      icon: <MessageCircle className="w-8 h-8" />, 
+      description: 'Chat directly on WhatsApp',
+      color: 'from-green-500 to-emerald-500',
+      bgColor: 'bg-green-50',
+      textColor: 'text-green-600'
+    },
+    { 
+      name: 'IVR System', 
+      icon: <Phone className="w-8 h-8" />, 
+      description: 'Voice calls for offline access',
+      color: 'from-orange-500 to-red-500',
+      bgColor: 'bg-orange-50',
+      textColor: 'text-orange-600'
+    }
   ];
 
   return (
@@ -139,65 +168,69 @@ const TechnologySection = () => {
         </div>
 
         {/* Multi-Language Support */}
-        <div className="card mb-16">
-          <div className="text-center mb-8">
-            <h3 className="heading-tertiary mb-4">Multi-Language Support</h3>
-            <p className="text-body max-w-2xl mx-auto">
-              Communicate with our AI assistant in your native language. 
-              We support 15+ languages to serve farmers worldwide.
-            </p>
+        <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-100 mb-12">
+          <div className="text-center mb-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Multi-Language Support</h3>
           </div>
           
           {/* Language Selector */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
+          <div className="flex justify-center gap-2 overflow-x-auto">
             {languages.map((lang) => (
               <button
                 key={lang.code}
                 onClick={() => setSelectedLanguage(lang.code)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 transition-all duration-200 ${
+                className={`flex items-center gap-1 px-2 py-1.5 rounded-md border-2 transition-all duration-200 whitespace-nowrap ${
                   selectedLanguage === lang.code
                     ? 'border-[#2E7D44] bg-[#2E7D44]/10 text-[#2E7D44]'
                     : 'border-gray-200 hover:border-[#2E7D44]/50 text-[#757575]'
                 }`}
               >
-                <span className="text-lg">{lang.flag}</span>
-                <span className="text-sm font-medium">{lang.name}</span>
+                <span className="text-xs">{lang.flag}</span>
+                <span className="text-xs font-medium">{lang.name}</span>
               </button>
             ))}
-          </div>
-          
-          {/* Language Demo */}
-          <div className="bg-gray-50 rounded-lg p-6 text-center">
-            <p className="text-sm text-[#757575] mb-2">Sample response in {languages.find(l => l.code === selectedLanguage)?.name}:</p>
-            <p className="text-lg font-medium text-[#212121]">
-              {selectedLanguage === 'en' && "Your tomatoes need more water during hot weather."}
-              {selectedLanguage === 'hi' && "गर्म मौसम में आपके टमाटर को अधिक पानी की आवश्यकता है।"}
-              {selectedLanguage === 'es' && "Tus tomates necesitan más agua durante el clima caluroso."}
-              {selectedLanguage === 'fr' && "Vos tomates ont besoin de plus d'eau par temps chaud."}
-              {selectedLanguage === 'pt' && "Seus tomates precisam de mais água durante o tempo quente."}
-              {selectedLanguage === 'ar' && "تحتاج طماطمك إلى المزيد من الماء أثناء الطقس الحار."}
-              {selectedLanguage === 'zh' && "在炎热的天气里，你的西红柿需要更多的水。"}
-              {selectedLanguage === 'ja' && "暑い天候の間、あなたのトマトはより多くの水を必要とします。"}
-            </p>
           </div>
         </div>
 
         {/* Platform Compatibility */}
-        <div className="text-center mb-8">
-          <h3 className="heading-tertiary mb-4">Available on All Platforms</h3>
-          <p className="text-body max-w-2xl mx-auto">
-            Access Farm-Connect wherever you are, on any device, through multiple channels.
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {platforms.map((platform, index) => (
-            <div key={index} className="text-center p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="text-4xl mb-4">{platform.icon}</div>
-              <h4 className="font-semibold text-[#212121] mb-2">{platform.name}</h4>
-              <p className="text-sm text-[#757575]">{platform.description}</p>
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg p-8 lg:p-12 border border-gray-100">
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">Available on All Platforms</h3>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Access AgriAI wherever you are, on any device, through multiple channels.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {platforms.map((platform, index) => (
+              <div key={index} className="group text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:-translate-y-2">
+                {/* Icon Container */}
+                <div className={`w-16 h-16 bg-gradient-to-r ${platform.color} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                  <div className="text-white">
+                    {platform.icon}
+                  </div>
+                </div>
+                
+                {/* Content */}
+                <h4 className="text-lg font-bold text-gray-900 mb-2">{platform.name}</h4>
+                <p className="text-sm text-gray-600 leading-relaxed">{platform.description}</p>
+                
+                {/* Status Indicator */}
+                <div className="mt-4 flex items-center justify-center">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="ml-2 text-xs text-green-600 font-medium">Available</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Additional Info */}
+          <div className="mt-12 text-center">
+            <div className="inline-flex items-center gap-2 bg-green-50 px-4 py-2 rounded-full">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm text-green-700 font-medium">All platforms sync in real-time</span>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
