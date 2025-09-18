@@ -17,12 +17,7 @@ import Weather from './pages/Weather'
 import ErrorPage from './components/ErrorPage'
 import FeaturePlaceholder from './pages/FeaturePlaceholder'
 import ProtectedRoute from './components/ProtectedRoute'
-<<<<<<< HEAD
-import FarmerCommunityPage from './pages/FarmerCommunityPage.jsx'
-import ExpertConsultationPage from './pages/ExpertConsultationPage.jsx'
-=======
 import EnhancedFarmerCommunity from './pages/EnhancedFarmerCommunity.jsx'
->>>>>>> 96dd352eb78c0f240ba09d7bf2e4b05750ca692a
 // Auth Provider
 import { AuthProvider } from './Authorisation/AuthProvider.jsx'
 
@@ -106,26 +101,18 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/community" element={
-<<<<<<< HEAD
-  <ProtectedRoute>
-    <FarmerCommunityPage />
-  </ProtectedRoute>
-} />
-            {/* <Route path="/experts" element={
-=======
               <ProtectedRoute>
                 <EnhancedFarmerCommunity />
               </ProtectedRoute>
             } />
             <Route path="/experts" element={
->>>>>>> 96dd352eb78c0f240ba09d7bf2e4b05750ca692a
               <ProtectedRoute>
                 <FeaturePlaceholder 
                   featureName="Expert Consultation" 
                   description="Book video calls with agricultural specialists and experts"
                 />
               </ProtectedRoute>
-            } /> */}
+            } />
             <Route path="/learning" element={
               <ProtectedRoute>
                 <FeaturePlaceholder 
@@ -174,11 +161,6 @@ function App() {
             <Route path="/schemes" element={
               <ProtectedRoute>
                 <GovernmentSchemes />
-              </ProtectedRoute>
-            } />
-            <Route path="/experts" element={
-              <ProtectedRoute>
-                <ExpertConsultationPage />
               </ProtectedRoute>
             } />
             <Route path="/expense-tracker" element={
