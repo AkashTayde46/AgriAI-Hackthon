@@ -17,7 +17,7 @@ import UnifiedAssistant from "./components/UnifiedAssistant";
 import ErrorBoundary from "./components/ErrorBoundary";
 import MicroinvestmentPlatform from "./Pages/mip";
 import PoultryFarmGuide from "./Pages/poultry";
-import RuralBusinessOpportunities from "./Pages/ruralbusiness";
+// import RuralBusinessOpportunities from "./Pages/ruralbusiness";
 import BusinessGuide from "./Pages/BusinessGuide";
 import Chatbot from "./Pages/chatbot";
 import DiscussionForums from "./Pages/community";
