@@ -37,7 +37,7 @@ const getUserCommunities = async (req, res) => {
 };
 
 // ------------------- CREATE COMMUNITY -------------------
-const createCommunity = async (req, res) => {
+const createCommunity = async (req, res, io) => {
   try {
     const { name, description, category, isPrivate, maxMembers } = req.body;
     const creatorId = req.user._id;
@@ -63,7 +63,7 @@ const createCommunity = async (req, res) => {
     await community.populate('members', 'name email avatar');
 
     // Emit to all connected clients to update their community list
-    // Note: Socket.io integration would be added here in production
+    if (io) io.emit("updateCommunities", await Community.find());
 
     res.status(201).json(community);
   } catch (error) {
@@ -98,8 +98,6 @@ const updateCommunity = async (req, res) => {
       { new: true, runValidators: true }
     ).populate('creator', 'name email avatar').populate('members', 'name email avatar');
 
-    // Note: Socket.io integration would be added here in production
-
     res.status(200).json(updatedCommunity);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -125,8 +123,6 @@ const deleteCommunity = async (req, res) => {
 
     // Delete the community
     await Community.findByIdAndDelete(id);
-
-    // Note: Socket.io integration would be added here in production
 
     res.status(200).json({ message: "Community deleted successfully" });
   } catch (error) {
@@ -164,8 +160,6 @@ const requestToJoin = async (req, res) => {
 
     await community.save();
 
-    // Note: Socket.io integration would be added here in production
-
     res.status(200).json({ message: "Join request sent successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -198,14 +192,10 @@ const handleJoinRequest = async (req, res) => {
       request.status = 'approved';
       request.reviewedAt = new Date();
       request.reviewedBy = userId;
-
-      // Note: Socket.io integration would be added here in production
     } else if (action === 'reject') {
       request.status = 'rejected';
       request.reviewedAt = new Date();
       request.reviewedBy = userId;
-
-      // Note: Socket.io integration would be added here in production
     } else {
       return res.status(400).json({ message: "Invalid action. Use 'approve' or 'reject'" });
     }
@@ -334,8 +324,6 @@ const leaveCommunity = async (req, res) => {
     // Remove user from members
     community.members = community.members.filter(memberId => memberId.toString() !== userId.toString());
     await community.save();
-
-    // Note: Socket.io integration would be added here in production
 
     res.status(200).json({ message: "Left community successfully" });
   } catch (error) {

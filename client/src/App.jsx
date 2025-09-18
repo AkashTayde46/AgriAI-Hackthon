@@ -101,10 +101,10 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/community" element={
-  <ProtectedRoute>
-    <EnhancedFarmerCommunity />
-  </ProtectedRoute>
-} />
+              <ProtectedRoute>
+                <EnhancedFarmerCommunity />
+              </ProtectedRoute>
+            } />
             <Route path="/experts" element={
               <ProtectedRoute>
                 <FeaturePlaceholder 
