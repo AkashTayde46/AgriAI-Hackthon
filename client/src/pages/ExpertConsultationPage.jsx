@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 // In a real app, you would uncomment this:
 // import { io } from "socket.io-client";
 
@@ -16,12 +16,13 @@ const ExpertConsultation = () => {
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState("");
   const [typing, setTyping] = useState(false);
-  // New state: 'intro', 'consultation', 'registration'
-  const [appState, setAppState] = useState('intro'); 
+  const [appState, setAppState] = useState("intro");
+
   const [registrationData, setRegistrationData] = useState({
     name: "",
     domain: "",
-    role: "expert", // Default to expert for the registration form
+    role: "expert",
+    verificationProof: null, // NEW FIELD
   });
 
   // Fake socket (replace with actual server connection: const socket = io("YOUR_SERVER_URL"))
@@ -35,7 +36,7 @@ const ExpertConsultation = () => {
             "That's a great question! Let me help you.",
             "Based on your description, I’d recommend crop rotation.",
             "The soil conditions indicate irrigation improvements.",
-            "Consider adjusting your planting schedule for optimal yield."
+            "Consider adjusting your planting schedule for optimal yield.",
           ];
           setMessages((prev) => [
             ...prev,
@@ -46,8 +47,8 @@ const ExpertConsultation = () => {
       } else if (event === "register_user") {
         console.log("Simulating registration for:", data);
         alert(`Registration successful! Welcome, ${data.name} as a ${data.role}. Your application will be reviewed.`);
-        setAppState('intro'); // Go back to intro after registration
-        setRegistrationData({ name: "", domain: "", role: "expert" }); // Reset form
+        setAppState("intro"); // Back to intro
+        setRegistrationData({ name: "", domain: "", role: "expert", verificationProof: null }); // Reset form
       }
     },
   };
@@ -60,22 +61,38 @@ const ExpertConsultation = () => {
     setMessageInput("");
   };
 
+  // Handle text + file input
   const handleRegistrationChange = (e) => {
-    const { name, value } = e.target;
-    setRegistrationData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    const { name, value, files } = e.target;
+    if (name === "verificationProof") {
+      setRegistrationData((prevData) => ({
+        ...prevData,
+        verificationProof: files[0],
+      }));
+    } else {
+      setRegistrationData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleRegistrationSubmit = (e) => {
     e.preventDefault();
+    console.log("Submitting Registration:", registrationData);
+
+    // Simulate file name check
+    if (!registrationData.verificationProof) {
+      alert("Please upload a verification proof before submitting.");
+      return;
+    }
+
     socket.emit("register_user", registrationData);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-100 p-6 font-sans flex flex-col">
-      {/* Header - Always visible */}
+      {/* Header */}
       <div className="bg-white shadow-md rounded-xl mb-6 p-4 flex justify-between items-center z-10">
         <div className="flex items-center gap-3 text-2xl font-bold text-green-700">
           <div className="bg-gradient-to-tr from-green-600 to-green-400 w-12 h-12 flex items-center justify-center rounded-lg text-white">
@@ -84,13 +101,13 @@ const ExpertConsultation = () => {
           AgriExpert
         </div>
         <div className="flex items-center gap-3 bg-gray-100 px-4 py-2 rounded-full">
-          <span>Farmer John</span> {/* This would be dynamic based on login */}
+          <span>Farmer John</span>
           <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm">Farmer</span>
         </div>
       </div>
 
-      {/* Conditional Rendering based on appState */}
-      {appState === 'intro' && (
+      {/* App States */}
+      {appState === "intro" && (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center bg-white p-10 rounded-2xl shadow-xl max-w-2xl w-full">
             <h1 className="text-4xl font-bold text-green-800 mb-6">Welcome to AgriExpert!</h1>
@@ -99,13 +116,13 @@ const ExpertConsultation = () => {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <button
-                onClick={() => setAppState('consultation')}
+                onClick={() => setAppState("consultation")}
                 className="bg-green-600 text-white text-xl py-4 px-8 rounded-full shadow-lg hover:bg-green-700 transition transform hover:scale-105"
               >
                 Consult an Expert
               </button>
               <button
-                onClick={() => setAppState('registration')}
+                onClick={() => setAppState("registration")}
                 className="bg-blue-600 text-white text-xl py-4 px-8 rounded-full shadow-lg hover:bg-blue-700 transition transform hover:scale-105"
               >
                 Become an Expert
@@ -115,7 +132,7 @@ const ExpertConsultation = () => {
         </div>
       )}
 
-      {appState === 'registration' && (
+      {appState === "registration" && (
         <div className="flex-1 flex items-center justify-center">
           <div className="bg-white rounded-2xl shadow-lg p-10 flex flex-col items-center max-w-xl w-full">
             <h2 className="text-3xl font-bold mb-6 text-blue-700">Expert Registration</h2>
@@ -135,7 +152,7 @@ const ExpertConsultation = () => {
                   required
                 />
               </div>
-              <div className="mb-6">
+              <div className="mb-5">
                 <label className="block text-gray-700 font-semibold mb-2 text-left">Your Expertise Domain</label>
                 <input
                   type="text"
@@ -146,9 +163,27 @@ const ExpertConsultation = () => {
                   placeholder="e.g., Soil Science, Pest Management"
                   required
                 />
-                 <p className="text-sm text-gray-500 mt-2 text-left">
-                    Specify your primary area of agricultural knowledge.
-                 </p>
+              </div>
+              <div className="mb-6">
+                <label className="block text-gray-700 font-semibold mb-2 text-left">
+  Verification Proof <span className="text-red-500">*</span>
+</label>
+<input
+  type="file"
+  name="verificationProof"
+  accept=".pdf,.jpg,.jpeg,.png"
+  onChange={handleRegistrationChange}
+  className="w-full px-5 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-400 outline-none text-lg"
+  required
+/>
+<p className="text-sm text-gray-500 mt-2 text-left">
+  Please upload one of the following as proof of expertise: <br />
+  • Degree / Diploma certificate <br />
+  • Professional license or Government ID <br />
+  • Experience / Membership letter <br />
+  <span className="italic">Accepted formats: PDF, JPG, PNG</span>
+</p>
+
               </div>
               <button
                 type="submit"
@@ -158,7 +193,7 @@ const ExpertConsultation = () => {
               </button>
               <button
                 type="button"
-                onClick={() => setAppState('intro')}
+                onClick={() => setAppState("intro")}
                 className="w-full mt-4 text-blue-700 hover:underline text-md"
               >
                 Back to Home
@@ -168,14 +203,14 @@ const ExpertConsultation = () => {
         </div>
       )}
 
-      {appState === 'consultation' && (
+      {appState === "consultation" && (
         <div className="grid grid-cols-1 md:grid-cols-[350px_1fr] gap-6 flex-1">
-          {/* Experts Panel */}
+          {/* Experts List */}
           <div className="bg-white rounded-2xl shadow-lg flex flex-col">
             <div className="bg-gradient-to-r from-green-700 to-green-800 text-white p-4 rounded-t-2xl font-semibold flex justify-between items-center">
               <span>👥 Agricultural Experts</span>
               <button
-                onClick={() => setAppState('intro')}
+                onClick={() => setAppState("intro")}
                 className="bg-green-500 text-white text-xs px-3 py-1 rounded-full hover:bg-green-400 transition"
               >
                 ← Back
@@ -214,11 +249,7 @@ const ExpertConsultation = () => {
                       <div className="font-semibold">{expert.name}</div>
                       <div className="text-sm text-gray-500">{expert.domain}</div>
                       <div className="flex items-center text-xs gap-1">
-                        <span
-                          className={`w-2 h-2 rounded-full ${
-                            expert.status === "online" ? "bg-green-500" : "bg-gray-400"
-                          }`}
-                        ></span>
+                        <span className={`w-2 h-2 rounded-full ${expert.status === "online" ? "bg-green-500" : "bg-gray-400"}`}></span>
                         {expert.status}
                       </div>
                     </div>
