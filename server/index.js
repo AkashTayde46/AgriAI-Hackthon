@@ -67,6 +67,7 @@ const userRoutes = require('./routes/userRoutes');
 const schemeRoutes = require('./routes/schemeRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const communityRoutes = require('./routes/communityRoutes');
+const expertRoutes = require('./routes/expertRoutes');
 
 // Use API routes
 app.use('/api/auth', authRoutes);
@@ -74,6 +75,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/schemes', schemeRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/communities', communityRoutes);
+app.use('/api/experts', expertRoutes);
 
 // ---------------------- SOCKET.IO SETUP ----------------------
 

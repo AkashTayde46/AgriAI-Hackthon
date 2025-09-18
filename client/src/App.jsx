@@ -18,6 +18,9 @@ import ErrorPage from './components/ErrorPage'
 import FeaturePlaceholder from './pages/FeaturePlaceholder'
 import ProtectedRoute from './components/ProtectedRoute'
 import EnhancedFarmerCommunity from './pages/EnhancedFarmerCommunity.jsx'
+import ExpertConsultationPage from './pages/ExpertConsultationPage.jsx'
+import SmartHealthDiagnostics from './pages/SmartHealthDiagnostics'
+import CropYieldPrediction from './pages/CropYieldPrediction'
 // Auth Provider
 import { AuthProvider } from './Authorisation/AuthProvider.jsx'
 
@@ -63,7 +66,7 @@ function App() {
              
             
             {/* Feature Routes */}
-            <Route path="/ai-advisor" element={
+            <Route path="https://31177169123506864a.gradio.live" element={
               <ProtectedRoute>
                 <FeaturePlaceholder 
                   featureName="AI Crop Advisor" 
@@ -73,10 +76,7 @@ function App() {
             } />
             <Route path="/diagnostics" element={
               <ProtectedRoute>
-                <FeaturePlaceholder 
-                  featureName="Smart Health Diagnostics" 
-                  description="Upload crop images for instant disease and pest detection"
-                />
+                <SmartHealthDiagnostics />
               </ProtectedRoute>
             } />
             <Route path="/weather" element={
@@ -84,12 +84,9 @@ function App() {
                 <Weather />
               </ProtectedRoute>
             } />
-            <Route path="/market" element={
+            <Route path="/yield-prediction" element={
               <ProtectedRoute>
-                <FeaturePlaceholder 
-                  featureName="Market Intelligence" 
-                  description="Price trends, market analysis, and buyer-seller matching"
-                />
+                <CropYieldPrediction />
               </ProtectedRoute>
             } />
             <Route path="/finance" element={
@@ -107,10 +104,7 @@ function App() {
             } />
             <Route path="/experts" element={
               <ProtectedRoute>
-                <FeaturePlaceholder 
-                  featureName="Expert Consultation" 
-                  description="Book video calls with agricultural specialists and experts"
-                />
+                <ExpertConsultationPage />
               </ProtectedRoute>
             } />
             <Route path="/learning" element={
