@@ -11,7 +11,7 @@ const {
   seedSchemes,
   getAISchemes
 } = require('../controllers/SchemeController');
-const authenticateToken = require('../middlewares/auth');
+const { protect: authenticateToken } = require('../middlewares/auth');
 
 // Public routes (no authentication required)
 router.get('/', getSchemes);

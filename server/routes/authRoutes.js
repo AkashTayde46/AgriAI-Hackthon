@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const router = express.Router();
 const authController = require('../controllers/AuthController');
-const auth = require('../middlewares/auth');
+const { protect: auth } = require('../middlewares/auth');
 
 // Google OAuth routes
 router.get('/google', 

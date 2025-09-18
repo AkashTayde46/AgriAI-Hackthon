@@ -1,100 +1,70 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middlewares/auth");
+const socketMiddleware = require("../middlewares/socketMiddleware");
+const {
+  getCommunities,
+  getUserCommunities,
+  createCommunity,
+  updateCommunity,
+  deleteCommunity,
+  requestToJoin,
+  handleJoinRequest,
+  getJoinRequests,
+  getMessages,
+  createMessage,
+  leaveCommunity,
+} = require("../controllers/communityController");
 
-// Import Models
-const Post = require("../models/Post");
-const Comment = require("../models/Comment");
-const Marketplace = require("../models/Marketplace");
-const Event = require("../models/Event");
-const Notification = require("../models/Notification");
+// Socket.io middleware - will be set by the main server
+let ioInstance = null;
+const setSocketIO = (io) => {
+  ioInstance = io;
+  // Don't apply middleware to all routes, only to specific ones that need it
+};
 
-// ----------------- POSTS -----------------
+// Export the setter function
+router.setSocketIO = setSocketIO;
 
-// Create Post
-router.post("/posts", protect, async (req, res) => {
-  try {
-    const post = await Post.create({
-      author: req.user._id,
-      title: req.body.title,
-      content: req.body.content,
-      tags: req.body.tags,
-    });
-    res.status(201).json(post);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+// ------------------- COMMUNITY ROUTES -------------------
 
-// Get All Posts
-router.get("/posts", async (req, res) => {
-  const posts = await Post.find().populate("author", "name avatar");
-  res.json(posts);
-});
+// Get all communities (public)
+router.get("/", getCommunities);
 
-// ----------------- COMMENTS -----------------
+// Get user's communities (communities they created or joined)
+router.get("/my-communities", protect, getUserCommunities);
 
-// Add Comment
-router.post("/comments/:postId", protect, async (req, res) => {
-  try {
-    const comment = await Comment.create({
-      post: req.params.postId,
-      author: req.user._id,
-      content: req.body.content,
-    });
-    res.status(201).json(comment);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+// Create a new community
+router.post("/", protect, createCommunity);
 
-// Get Comments for a Post
-router.get("/comments/:postId", async (req, res) => {
-  const comments = await Comment.find({ post: req.params.postId }).populate("author", "name avatar");
-  res.json(comments);
-});
+// Update community (creator only)
+router.put("/:id", protect, updateCommunity);
 
-// ----------------- MARKETPLACE -----------------
+// Delete community (creator only)
+router.delete("/:id", protect, deleteCommunity);
 
-router.post("/marketplace", protect, async (req, res) => {
-  try {
-    const item = await Marketplace.create({ ...req.body, seller: req.user._id });
-    res.status(201).json(item);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+// Request to join a community
+router.post("/:id/join-request", protect, requestToJoin);
 
-router.get("/marketplace", async (req, res) => {
-  const items = await Marketplace.find().populate("seller", "name location");
-  res.json(items);
-});
+// Leave a community
+router.post("/:id/leave", protect, leaveCommunity);
 
-// ----------------- EVENTS -----------------
+// ------------------- JOIN REQUEST ROUTES (CREATOR ONLY) -------------------
 
-router.post("/events", protect, async (req, res) => {
-  try {
-    const event = await Event.create({ ...req.body, organizer: req.user._id });
-    res.status(201).json(event);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+// Get join requests for a community
+router.get("/:id/join-requests", protect, getJoinRequests);
 
-router.get("/events", async (req, res) => {
-  const events = await Event.find().populate("organizer", "name location");
-  res.json(events);
-});
+// Approve or reject a join request
+router.post("/:id/join-requests/:requestId", protect, handleJoinRequest);
 
-// ----------------- NOTIFICATIONS -----------------
+// ------------------- MESSAGE ROUTES (MEMBERS ONLY) -------------------
 
-router.get("/notifications", protect, async (req, res) => {
-  try {
-    const notifications = await Notification.find({ recipient: req.user._id });
-    res.json(notifications);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+// Get messages from a community
+router.get("/:id/messages", protect, getMessages);
+
+// Send a message to a community
+router.post("/:id/messages", protect, (req, res) => {
+  createMessage(req, res, ioInstance);
 });
 
 module.exports = router;
