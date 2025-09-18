@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getUserProfile, updateUserProfile, changePassword, deleteAccount } = require('../controllers/UserController');
-const authenticateToken = require('../middlewares/auth');
+const { protect: authenticateToken } = require('../middlewares/auth');
 
 // All user routes require authentication
 router.use(authenticateToken);

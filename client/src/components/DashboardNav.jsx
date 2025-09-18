@@ -64,6 +64,7 @@ const DashboardNav = () => {
           {/* Right: Navigation Links */}
           <div className="hidden lg:flex items-center space-x-6 xl:space-x-8 text-[rgb(6,86,6)] text-base xl:text-[18px] font-medium font-[Outfit]">
             <Link to="/dashboard" className="block text-green-800 hover:text-green-600 transition-colors duration-200">Dashboard</Link>
+            <Link to="/community" className="block text-green-800 hover:text-green-600 transition-colors duration-200">Community</Link>
             <Link to="/reels" className="block text-green-800 hover:text-green-600 transition-colors duration-200">Reels</Link>
             <Link to="/news" className="block text-green-800 hover:text-green-600 transition-colors duration-200">News</Link>
             <Link to="/advisormap" className="block text-green-800 hover:text-green-600 transition-colors duration-200">AdvisorMap</Link>
@@ -125,6 +126,7 @@ const DashboardNav = () => {
         <div className="lg:hidden bg-white/95 border-t border-green-100 rounded-b-2xl shadow-lg">
           <div className="px-4 pt-4 pb-4 space-y-2">
             <Link to="/dashboard" className="block px-3 py-2 text-green-800 rounded-lg font-semibold" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
+            <Link to="/community" className="block px-3 py-2 text-green-800 rounded-lg font-semibold" onClick={() => setIsMenuOpen(false)}>Community</Link>
             <Link to="/reels" className="block px-3 py-2 text-green-800 rounded-lg font-semibold" onClick={() => setIsMenuOpen(false)}>Reels</Link>
             <Link to="/news" className="block px-3 py-2 text-green-800 rounded-lg font-semibold" onClick={() => setIsMenuOpen(false)}>News</Link>
             <Link to="/advisormap" className="block px-3 py-2 text-green-800 rounded-lg font-semibold" onClick={() => setIsMenuOpen(false)}>AdvisorMap</Link>

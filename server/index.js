@@ -1,3 +1,120 @@
+// // server.js
+
+// // Load environment variables FIRST
+// require('dotenv').config(); // Load environment variables from .env file
+
+// // Import required packages
+// const express = require('express');
+// const mongoose = require('mongoose');
+// const cors = require('cors');
+// const session = require('express-session');
+// const cookieParser = require('cookie-parser');
+// const passport = require('./config/passport');
+
+// // Create an Express application
+// const app = express();
+// const port = process.env.PORT || 8000;
+
+// // Middleware
+// app.use(cors({
+//   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+//   credentials: true
+// }));
+// app.use(express.json()); // Allows parsing of JSON request bodies
+// app.use(express.urlencoded({ extended: true }));
+// app.use(cookieParser());
+
+// // Session configuration
+// app.use(session({
+//   secret: process.env.SESSION_SECRET || 'your-session-secret',
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: {
+//     secure: process.env.NODE_ENV === 'production',
+//     maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+//   }
+// }));
+
+// // Passport middleware
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+// // MongoDB Connection (Optional)
+// if (process.env.MONGO_URI) {
+//   mongoose.connect(process.env.MONGO_URI, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   })
+//   .then(() => console.log('✅ MongoDB Connected Successfully'))
+//   .catch((err) => {
+//     console.error('❌ MongoDB Connection Error:', err.message);
+//     console.log('⚠️  Continuing without MongoDB...');
+//   });
+// } else {
+//   console.log('⚠️  No MongoDB URI provided, running without database');
+// }
+
+// // Define a simple route to check if the server is running
+// app.get('/', (req, res) => {
+//   res.send('Hello from the AgriAI backend!');
+// });
+
+// // Import routes
+// const authRoutes = require('./routes/authRoutes');
+// const userRoutes = require('./routes/userRoutes');
+// const schemeRoutes = require('./routes/schemeRoutes');
+// const transactionRoutes = require('./routes/transactionRoutes');
+
+// // API Routes
+// app.get('/api/health', (req, res) => {
+//   res.json({ 
+//     status: 'OK', 
+//     message: 'Backend is running successfully!',
+//     timestamp: new Date().toISOString()
+//   });
+// });
+
+// app.get('/api/test', (req, res) => {
+//   res.json({ 
+//     message: 'Test endpoint working!',
+//     data: {
+//       server: 'AgriAI Backend',
+//       version: '1.0.0',
+//       environment: process.env.NODE_ENV || 'development'
+//     }
+//   });
+// });
+
+// // Sample data endpoint for testing
+// app.get('/api/sample-data', (req, res) => {
+//   res.json({
+//     farms: [
+//       { id: 1, name: 'Green Valley Farm', location: 'California', crops: ['Tomatoes', 'Lettuce'] },
+//       { id: 2, name: 'Sunrise Agriculture', location: 'Texas', crops: ['Wheat', 'Corn'] },
+//       { id: 3, name: 'Organic Gardens', location: 'Oregon', crops: ['Apples', 'Berries'] }
+//     ]
+//   });
+// });
+
+// // Authentication routes
+// app.use('/api/auth', authRoutes);
+
+// // User routes
+// app.use('/api/user', userRoutes);
+
+// // Scheme routes
+// app.use('/api/schemes', schemeRoutes);
+
+// // Transaction routes
+// app.use('/api/transactions', transactionRoutes);
+
+// // Start the server
+// app.listen(port, () => {
+//   console.log(`🚀 Server is running on port: ${port}`);
+// });
+
+
+
 // server.js
 
 // Load environment variables FIRST
@@ -10,6 +127,8 @@ const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passport = require('./config/passport');
+const http = require('http'); // Needed for Socket.io
+const { Server } = require('socket.io');
 
 // Create an Express application
 const app = express();
@@ -20,7 +139,7 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true
 }));
-app.use(express.json()); // Allows parsing of JSON request bodies
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
@@ -39,7 +158,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// MongoDB Connection (Optional)
+// MongoDB Connection
 if (process.env.MONGO_URI) {
   mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -54,7 +173,7 @@ if (process.env.MONGO_URI) {
   console.log('⚠️  No MongoDB URI provided, running without database');
 }
 
-// Define a simple route to check if the server is running
+// Simple test route
 app.get('/', (req, res) => {
   res.send('Hello from the AgriAI backend!');
 });
@@ -64,51 +183,86 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const schemeRoutes = require('./routes/schemeRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
+const communityRoutes = require('./routes/communityRoutes');
 
-// API Routes
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'Backend is running successfully!',
-    timestamp: new Date().toISOString()
-  });
-});
-
-app.get('/api/test', (req, res) => {
-  res.json({ 
-    message: 'Test endpoint working!',
-    data: {
-      server: 'AgriAI Backend',
-      version: '1.0.0',
-      environment: process.env.NODE_ENV || 'development'
-    }
-  });
-});
-
-// Sample data endpoint for testing
-app.get('/api/sample-data', (req, res) => {
-  res.json({
-    farms: [
-      { id: 1, name: 'Green Valley Farm', location: 'California', crops: ['Tomatoes', 'Lettuce'] },
-      { id: 2, name: 'Sunrise Agriculture', location: 'Texas', crops: ['Wheat', 'Corn'] },
-      { id: 3, name: 'Organic Gardens', location: 'Oregon', crops: ['Apples', 'Berries'] }
-    ]
-  });
-});
-
-// Authentication routes
+// Use API routes
 app.use('/api/auth', authRoutes);
-
-// User routes
 app.use('/api/user', userRoutes);
-
-// Scheme routes
 app.use('/api/schemes', schemeRoutes);
-
-// Transaction routes
 app.use('/api/transactions', transactionRoutes);
+app.use('/api/communities', communityRoutes);
 
-// Start the server
-app.listen(port, () => {
-  console.log(`🚀 Server is running on port: ${port}`);
+// ---------------------- SOCKET.IO SETUP ----------------------
+
+// Create HTTP server
+const server = http.createServer(app);
+
+// Create Socket.io server
+const io = new Server(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+// Set Socket.io instance for community routes
+communityRoutes.setSocketIO(io);
+
+// Socket.io connection logic
+io.on('connection', (socket) => {
+  console.log('⚡ New client connected:', socket.id);
+
+  // Join user-specific room for notifications
+  socket.on('joinUserRoom', (userId) => {
+    socket.join(`user_${userId}`);
+    console.log(`User ${userId} joined their notification room`);
+  });
+
+  // Join creator-specific room for join request notifications
+  socket.on('joinCreatorRoom', (creatorId) => {
+    socket.join(`creator_${creatorId}`);
+    console.log(`Creator ${creatorId} joined their notification room`);
+  });
+
+  // Join community room for real-time messaging
+  socket.on('joinCommunityRoom', (communityId) => {
+    socket.join(`community_${communityId}`);
+    console.log(`User ${socket.id} joined community room: ${communityId}`);
+  });
+
+  // Leave community room
+  socket.on('leaveCommunityRoom', (communityId) => {
+    socket.leave(`community_${communityId}`);
+    console.log(`User ${socket.id} left community room: ${communityId}`);
+  });
+
+  // Handle sending chat messages (legacy support)
+  socket.on('chatMessage', (data) => {
+    // Broadcast message to everyone in the room
+    io.to(data.room).emit('newMessage', {
+      sender: data.sender,
+      message: data.message,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  // Handle community message sending
+  socket.on('communityMessage', (data) => {
+    // Broadcast message to all members in the community
+    io.to(`community_${data.communityId}`).emit('newMessage', {
+      sender: data.sender,
+      message: data.message,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  socket.on('disconnect', () => {
+    console.log('❌ Client disconnected:', socket.id);
+  });
+});
+
+// ---------------------- START SERVER ----------------------
+server.listen(port, () => {
+  console.log(`🚀 Server with Socket.io is running on port: ${port}`);
 });

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const transactionController = require('../controllers/TransactionController');
-const auth = require('../middlewares/auth');
+const { protect: auth } = require('../middlewares/auth');
 
 // Apply authentication middleware to all routes
 router.use(auth);

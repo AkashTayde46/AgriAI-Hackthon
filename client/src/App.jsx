@@ -13,10 +13,11 @@ import Profile from './pages/Profile'
 import GovernmentSchemes from './pages/GovernmentSchemes'
 import ExpenseTracker from './pages/ExpenseTracker'
 import News from './pages/News'
+import Weather from './pages/Weather'
 import ErrorPage from './components/ErrorPage'
 import FeaturePlaceholder from './pages/FeaturePlaceholder'
 import ProtectedRoute from './components/ProtectedRoute'
-
+import EnhancedFarmerCommunity from './pages/EnhancedFarmerCommunity.jsx'
 // Auth Provider
 import { AuthProvider } from './Authorisation/AuthProvider.jsx'
 
@@ -59,6 +60,7 @@ function App() {
                 <Profile />
               </ProtectedRoute>
             } />
+             
             
             {/* Feature Routes */}
             <Route path="/ai-advisor" element={
@@ -79,10 +81,7 @@ function App() {
             } />
             <Route path="/weather" element={
               <ProtectedRoute>
-                <FeaturePlaceholder 
-                  featureName="Weather Intelligence" 
-                  description="Real-time weather forecasts and climate-smart farming advice"
-                />
+                <Weather />
               </ProtectedRoute>
             } />
             <Route path="/market" element={
@@ -102,13 +101,10 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/community" element={
-              <ProtectedRoute>
-                <FeaturePlaceholder 
-                  featureName="Farmer Community" 
-                  description="Connect with farmers, share experiences, and learn best practices"
-                />
-              </ProtectedRoute>
-            } />
+  <ProtectedRoute>
+    <EnhancedFarmerCommunity />
+  </ProtectedRoute>
+} />
             <Route path="/experts" element={
               <ProtectedRoute>
                 <FeaturePlaceholder 
