@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Crop Recommendation</title>
+    <style>
+      body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; }
+      label { display:block; margin-top:12px; }
+      input[type="number"], select { width:100%; padding:8px; box-sizing:border-box; }
+      button { margin-top:16px; padding:10px 16px; cursor:pointer; }
+      .result { margin-top:20px; padding:12px; border-radius:6px; background:#f2f2f2; }
+      .error { margin-top:20px; color:#b00020; }
+    </style>
+  </head>
+  <body>
+    <h2>Enter features</h2>
+    <form method="post" action="/predict">
+      <label>N<input step="any" type="number" name="N" required></label>
+      <label>P<input step="any" type="number" name="P" required></label>
+      <label>K<input step="any" type="number" name="K" required></label>
+      <label>Temperature (°C)<input step="any" type="number" name="temperature" required></label>
+      <label>Humidity (%)<input step="any" type="number" name="humidity" required></label>
+      <label>pH<input step="any" type="number" name="ph" required></label>
+      <label>Rainfall (mm)<input step="any" type="number" name="rainfall" required></label>
+
+      <label>pH Category
+  <select name="ph_category" required>
+    {% for ph in ph_options %}
+      <option value="{{ ph }}">{{ ph }}</option>
+    {% endfor %}
+  </select>
+</label>
+
+<label>Rainfall Level
+  <select name="rainfall_level" required>
+    {% for r in rainfall_options %}
+      <option value="{{ r }}">{{ r }}</option>
+    {% endfor %}
+  </select>
+</label>
+
+
+      <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction %}
+      <div class="result">
+        <strong>Prediction:</strong> {{ prediction }}
+      </div>
+    {% endif %}
+
+    {% if error %}
+      <div class="error">
+        <strong>Error:</strong> {{ error }}
+      </div>
+    {% endif %}
+  </body>
+</html>

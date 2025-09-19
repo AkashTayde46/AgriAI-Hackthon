@@ -18,6 +18,12 @@ import ErrorPage from './components/ErrorPage'
 import FeaturePlaceholder from './pages/FeaturePlaceholder'
 import ProtectedRoute from './components/ProtectedRoute'
 import EnhancedFarmerCommunity from './pages/EnhancedFarmerCommunity.jsx'
+<<<<<<< HEAD
+=======
+import ExpertConsultationPage from './pages/ExpertConsultationPage.jsx'
+import SmartHealthDiagnostics from './pages/SmartHealthDiagnostics'
+import CropYieldPrediction from './pages/CropYieldPrediction'
+>>>>>>> 3df0d3de4f891225496d7507b3f6493d06fb5a20
 // Auth Provider
 import { AuthProvider } from './Authorisation/AuthProvider.jsx'
 import ExpertConsultation from './pages/ExpertConsultationPage.jsx'
@@ -63,7 +69,7 @@ function App() {
              
             
             {/* Feature Routes */}
-            <Route path="/ai-advisor" element={
+            <Route path="https://31177169123506864a.gradio.live" element={
               <ProtectedRoute>
                 <FeaturePlaceholder 
                   featureName="AI Crop Advisor" 
@@ -73,10 +79,7 @@ function App() {
             } />
             <Route path="/diagnostics" element={
               <ProtectedRoute>
-                <FeaturePlaceholder 
-                  featureName="Smart Health Diagnostics" 
-                  description="Upload crop images for instant disease and pest detection"
-                />
+                <SmartHealthDiagnostics />
               </ProtectedRoute>
             } />
             <Route path="/weather" element={
@@ -84,17 +87,18 @@ function App() {
                 <Weather />
               </ProtectedRoute>
             } />
+<<<<<<< HEAD
              <Route path="/experts" element={
               <ProtectedRoute>
                 <ExpertConsultation />
               </ProtectedRoute>
             } />
             <Route path="/market" element={
+=======
+            <Route path="/yield-prediction" element={
+>>>>>>> 3df0d3de4f891225496d7507b3f6493d06fb5a20
               <ProtectedRoute>
-                <FeaturePlaceholder 
-                  featureName="Market Intelligence" 
-                  description="Price trends, market analysis, and buyer-seller matching"
-                />
+                <CropYieldPrediction />
               </ProtectedRoute>
             } />
             <Route path="/finance" element={
@@ -110,7 +114,15 @@ function App() {
                 <EnhancedFarmerCommunity />
               </ProtectedRoute>
             } />
+<<<<<<< HEAD
             
+=======
+            <Route path="/experts" element={
+              <ProtectedRoute>
+                <ExpertConsultationPage />
+              </ProtectedRoute>
+            } />
+>>>>>>> 3df0d3de4f891225496d7507b3f6493d06fb5a20
             <Route path="/learning" element={
               <ProtectedRoute>
                 <FeaturePlaceholder 

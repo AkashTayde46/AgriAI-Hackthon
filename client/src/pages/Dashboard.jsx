@@ -9,7 +9,8 @@ import {
   Bot,
   Receipt,
   BadgeDollarSign,
-  User
+  User,
+  TrendingUp
 } from 'lucide-react';
 import DashboardNav from '../components/DashboardNav';
 
@@ -32,12 +33,12 @@ const Dashboard = () => {
     {
       title: "AI Crop Advisor",
       description: "Get personalized crop recommendations and disease diagnosis using AI",
-      link: "/ai-advisor",
+      link: "https://31177169123506864a.gradio.live",
       icon: Bot,
     },
     {
-      title: "Smart Health Diagnostics",
-      description: "Upload crop images for instant disease and pest detection",
+      title: "Smart Crop Prediction",
+      description: "Analyze crop images to detect diseases, pests, and health issues instantly",
       link: "/diagnostics",
       icon: Shield,
     },
@@ -48,10 +49,10 @@ const Dashboard = () => {
       icon: Globe,
     },
     {
-      title: "Market Intelligence",
-      description: "Price trends, market analysis, and buyer-seller matching",
-      link: "/market",
-      icon: BadgeDollarSign,
+      title: "Crop Yield Prediction",
+      description: "Predict crop yield based on location, weather, and farming practices",
+      link: "/yield-prediction",
+      icon: TrendingUp,
     },
     {
       title: "Financial Management",
