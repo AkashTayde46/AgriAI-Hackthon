@@ -68,6 +68,8 @@ const schemeRoutes = require('./routes/schemeRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const communityRoutes = require('./routes/communityRoutes');
 const expertRoutes = require('./routes/expertRoutes');
+const aiRoutes = require('./routes/aiRoutes');
+const financialRoutes = require('./routes/financialRoutes');
 
 // Use API routes
 app.use('/api/auth', authRoutes);
@@ -76,6 +78,8 @@ app.use('/api/schemes', schemeRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/communities', communityRoutes);
 app.use('/api/experts', expertRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/financial-advice', financialRoutes);
 
 // ---------------------- SOCKET.IO SETUP ----------------------
 
@@ -85,7 +89,7 @@ const server = http.createServer(app);
 // Create Socket.io server
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: [process.env.FRONTEND_URL || 'http://localhost:3000', 'http://localhost:5173'],
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -114,6 +118,8 @@ io.on('connection', (socket) => {
   socket.on('joinCommunityRoom', (communityId) => {
     socket.join(`community_${communityId}`);
     console.log(`User ${socket.id} joined community room: ${communityId}`);
+    // Send confirmation back to client
+    socket.emit('joinedCommunityRoom', { communityId, success: true });
   });
 
   // Leave community room

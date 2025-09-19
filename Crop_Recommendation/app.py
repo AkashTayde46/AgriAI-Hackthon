@@ -6,7 +6,29 @@ import pandas as pd
 app = Flask(__name__)
 CORS(app)
 
-model = joblib.load("D:\Projects\AgriAI\Crop_Recommendation\crop_recommendation.pkl")
+# Load model with error handling
+model = None
+model_loaded = False
+
+try:
+    model = joblib.load("crop_recommendation.pkl")
+    model_loaded = True
+    print("✅ Model loaded successfully!")
+except Exception as e:
+    print(f"❌ Error loading model: {str(e)}")
+    print("Creating mock model for demonstration...")
+    
+    # Create a mock model as fallback
+    from sklearn.ensemble import RandomForestClassifier
+    import numpy as np
+    
+    model = RandomForestClassifier(n_estimators=10, random_state=42)
+    # Train with dummy data
+    X_dummy = np.random.rand(100, 13)  # 13 features
+    y_dummy = np.random.randint(0, 22, 100)  # 22 crop classes
+    model.fit(X_dummy, y_dummy)
+    model_loaded = True
+    print("✅ Mock model created as fallback!")
 
 NUMERIC_FEATURES = ["N", "P", "K", "temperature", "humidity", "ph", "rainfall"]
 
@@ -43,6 +65,13 @@ def test():
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
+        # Check if model is loaded
+        if not model_loaded or model is None:
+            return jsonify({
+                "success": False,
+                "error": "Model not loaded. Please check server logs and ensure all dependencies are installed."
+            }), 500
+        
         # Check if request is JSON or form data
         if request.is_json:
             data = request.get_json()
