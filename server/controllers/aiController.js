@@ -55,6 +55,11 @@ Please provide a comprehensive, detailed response based on the quick reference a
         region: req.body.region || 'general'
       });
     }
+    
+    // Add conversation history context
+    if (conversationHistory && conversationHistory.length > 0) {
+      systemPrompt += `\n\nCONVERSATION HISTORY: ${JSON.stringify(conversationHistory)}`;
+    }
 
     console.log('Sending request to Gemini with prompt length:', systemPrompt.length);
     
@@ -86,19 +91,240 @@ Please provide a comprehensive, detailed response based on the quick reference a
       fallbackResponse = "I'm having trouble connecting to my AI services. Please check your internet connection and try again.";
     }
     
-    // Provide a basic farming response as fallback
-    if (message && message.toLowerCase().includes('government') || message.toLowerCase().includes('scheme')) {
-      fallbackResponse = "Here are some key government agricultural schemes: 1) PM-KISAN - Direct income support of ₹6,000/year to farmers, 2) PMFBY - Crop insurance scheme, 3) Soil Health Card Scheme - Free soil testing, 4) Kisan Credit Card - Low-interest loans, 5) PM-KMY - Organic farming promotion. Contact your local agriculture office for application details.";
+    // Provide specific farming responses as fallback
+    if (message && (message.toLowerCase().includes('government') || message.toLowerCase().includes('scheme'))) {
+      fallbackResponse = `🌾 **Government Agricultural Schemes for Farmers:**
+
+**1. PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)**
+• Direct income support of ₹6,000 per year
+• Paid in 3 installments of ₹2,000 each
+• Available to all landholding farmer families
+• Apply at: https://pmkisan.gov.in
+
+**2. PMFBY (Pradhan Mantri Fasal Bima Yojana)**
+• Crop insurance scheme
+• Premium: 2% for Kharif crops, 1.5% for Rabi crops
+• Covers yield loss due to natural calamities
+• Apply at your nearest bank or insurance company
+
+**3. Soil Health Card Scheme**
+• Free soil testing for farmers
+• Provides soil health status and recommendations
+• Helps optimize fertilizer use
+• Contact your local agriculture office
+
+**4. Kisan Credit Card (KCC)**
+• Low-interest loans up to ₹3 lakh
+• Interest rate: 4% per annum
+• Flexible repayment options
+• Apply at your nearest bank
+
+**5. PM-KMY (Paramparagat Krishi Vikas Yojana)**
+• Promotes organic farming
+• Financial assistance up to ₹50,000 per hectare
+• 3-year conversion period
+• Contact agriculture department
+
+**How to Apply:**
+• Visit your nearest agriculture office
+• Bring land documents and Aadhaar card
+• Fill application forms
+• Submit required documents
+
+**Contact Information:**
+• Agriculture helpline: 1800-180-1551
+• Online portal: https://pmkisan.gov.in`;
     } else if (message && message.toLowerCase().includes('plant')) {
-      fallbackResponse = "For planting advice, I recommend checking your local agricultural extension office or consulting with experienced farmers in your area. Generally, most crops should be planted when soil temperature is appropriate and after the last frost.";
+      fallbackResponse = `🌱 **Planting Guide:**
+
+**General Planting Tips:**
+• Check soil temperature before planting
+• Plant after the last frost date
+• Ensure proper spacing between plants
+• Water immediately after planting
+• Use quality seeds from certified sources
+
+**Seasonal Planting:**
+• **Spring (March-May):** Tomatoes, peppers, cucumbers, beans
+• **Monsoon (June-September):** Rice, maize, millets
+• **Winter (October-February):** Wheat, barley, peas, carrots
+
+**Soil Preparation:**
+• Test soil pH (6.0-7.0 ideal for most crops)
+• Add organic matter (compost, manure)
+• Ensure good drainage
+• Remove weeds and debris
+
+**Planting Depth:**
+• Small seeds: 1/4 inch deep
+• Medium seeds: 1/2 inch deep
+• Large seeds: 1 inch deep
+
+Contact your local agriculture extension office for specific regional advice.`;
     } else if (message && message.toLowerCase().includes('disease')) {
-      fallbackResponse = "For plant disease issues, I suggest consulting with a local plant pathologist or agricultural extension agent. They can provide specific diagnosis and treatment recommendations for your region.";
+      fallbackResponse = `🦠 **Plant Disease Management:**
+
+**Common Plant Diseases:**
+• **Leaf Spot:** Remove affected leaves, improve air circulation, apply copper fungicide
+• **Powdery Mildew:** Baking soda solution (1 tsp + 1 tsp soap + 1 gallon water)
+• **Blight:** Remove infected plants, apply copper fungicide, rotate crops
+• **Root Rot:** Improve drainage, avoid overwatering, use well-draining soil
+
+**Prevention Methods:**
+• Plant disease-resistant varieties
+• Ensure proper spacing for air circulation
+• Water at soil level, not on leaves
+• Rotate crops annually
+• Keep garden clean and weed-free
+
+**Organic Treatments:**
+• Neem oil spray
+• Baking soda solution
+• Copper fungicide
+• Remove and destroy infected plants
+
+**When to Consult:**
+• If disease spreads rapidly
+• If multiple plants are affected
+• If symptoms are severe
+• Contact local plant pathologist or agriculture extension agent
+
+**Emergency Contact:**
+• Plant disease helpline: 1800-180-1551
+• Local agriculture office for expert diagnosis`;
     } else if (message && message.toLowerCase().includes('soil')) {
-      fallbackResponse = "For soil health, consider getting a soil test from your local agricultural extension office. They can provide specific recommendations for your soil type and crop needs.";
+      fallbackResponse = `🌍 **Soil Health Management:**
+
+**Soil Testing:**
+• Get free soil test from agriculture office
+• Test for pH, nutrients, organic matter
+• Follow recommendations for improvement
+
+**Improving Soil Fertility:**
+• Add organic matter (compost, manure)
+• Use green manure crops
+• Practice crop rotation
+• Apply balanced fertilizers
+
+**Soil pH Management:**
+• Most crops prefer pH 6.0-7.0
+• Add lime to increase pH
+• Add sulfur to decrease pH
+• Test soil annually
+
+**Organic Matter:**
+• Add compost regularly
+• Use cover crops
+• Apply farmyard manure
+• Practice no-till farming
+
+**Nutrient Management:**
+• Nitrogen: For leafy growth
+• Phosphorus: For root development
+• Potassium: For fruit quality
+• Use soil test recommendations
+
+**Contact for Soil Testing:**
+• Local agriculture office
+• Soil Health Card Scheme
+• Free testing available
+• Get specific recommendations for your soil type`;
     } else if (message && message.toLowerCase().includes('tomato')) {
-      fallbackResponse = "For tomatoes, plant after the last frost when soil temperature reaches 60°F (15°C). In most regions, this is typically mid-April to early May. Start seeds indoors 6-8 weeks before transplanting. Provide support with stakes or cages and water consistently.";
+      fallbackResponse = `🍅 **Tomato Growing Guide:**
+
+**Planting Time:**
+• Start seeds indoors 6-8 weeks before last frost
+• Transplant when soil temperature reaches 60°F (15°C)
+• In most regions: mid-April to early May
+• Avoid planting too early in cold soil
+
+**Planting Steps:**
+1. Prepare soil with compost and organic matter
+2. Space plants 2-3 feet apart
+3. Plant deep, burying 2/3 of the stem
+4. Water immediately after planting
+5. Provide support with stakes or cages
+
+**Care Requirements:**
+• Water consistently, 1-2 inches per week
+• Mulch around plants to retain moisture
+• Fertilize every 2-3 weeks with balanced fertilizer
+• Prune suckers regularly
+• Check for pests and diseases
+
+**Harvesting:**
+• Pick when fully colored and slightly soft
+• Store at room temperature
+• Don't refrigerate until fully ripe
+• Use within a week for best flavor
+
+**Common Problems:**
+• Blossom end rot: Add calcium, consistent watering
+• Cracking: Consistent watering, avoid overwatering
+• Pests: Use organic methods, neem oil spray`;
     } else if (message && message.toLowerCase().includes('wheat')) {
-      fallbackResponse = "Winter wheat should be planted in late September to early October, while spring wheat is planted in early spring when soil temperature reaches 40°F (4°C). Ensure good seed-to-soil contact and proper spacing.";
+      fallbackResponse = `🌾 **Wheat Growing Guide:**
+
+**Planting Time:**
+• **Winter Wheat:** Late September to early October
+• **Spring Wheat:** Early spring when soil reaches 40°F (4°C)
+• Check local recommendations for your region
+
+**Planting Steps:**
+1. Prepare seedbed with good tilth
+2. Plant seeds 1-2 inches deep
+3. Space rows 6-8 inches apart
+4. Ensure good seed-to-soil contact
+5. Water lightly after planting
+
+**Care Requirements:**
+• Monitor for diseases and pests
+• Apply nitrogen fertilizer in early spring
+• Water during dry periods
+• Control weeds with cultivation or herbicides
+
+**Harvesting:**
+• Harvest when grain is hard and moisture content is 13-15%
+• Use combine harvester for large fields
+• Store in dry, cool conditions
+• Test grain quality before storage
+
+**Common Varieties:**
+• HD-2967: High yield, disease resistant
+• PBW-343: Good for bread making
+• Lok-1: Drought tolerant
+• Choose based on your region and needs`;
+    } else {
+      fallbackResponse = `🌾 **Welcome to AI Farming Assistant!**
+
+I'm here to help you with all your farming needs. I can assist with:
+
+**🌱 Crop Management:**
+• Planting schedules and techniques
+• Growth stages and care
+• Harvesting and storage
+
+**🦠 Disease & Pest Control:**
+• Disease diagnosis and treatment
+• Pest identification and management
+• Organic and chemical solutions
+
+**🌍 Soil & Fertility:**
+• Soil testing and improvement
+• Nutrient deficiency identification
+• Fertilizer recommendations
+
+**💰 Government Schemes:**
+• PM-KISAN, PMFBY, Kisan Credit Card
+• Subsidies and loans
+• Application procedures
+
+**🌦️ Weather & Climate:**
+• Weather-based farming advice
+• Climate adaptation strategies
+• Seasonal planning
+
+Please ask me specific questions about your farming needs, and I'll provide detailed, actionable advice!`;
     }
 
     res.status(500).json({
