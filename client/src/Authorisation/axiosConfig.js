@@ -12,7 +12,7 @@ const api = axios.create({
 // Request interceptor to add auth token if available
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('agriai_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -31,8 +31,9 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Clear local storage and redirect to login
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
+      localStorage.removeItem('agriai_user');
+      localStorage.removeItem('agriai_token');
+      localStorage.removeItem('agriai_authenticated');
       window.location.href = '/login';
     }
     return Promise.reject(error);

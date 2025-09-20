@@ -1,13 +1,15 @@
-# AgriAI - Frontend-Backend Connection
+# KrushiSetu - Smart Agricultural Solutions
 
-This project demonstrates a simple connection between a React frontend and Express.js backend.
+This project provides comprehensive agricultural solutions with AI-powered crop recommendations, disease detection, and smart farming tools.
 
 ## Project Structure
 
 ```
-AgriAI/
+KrushiSetu/
 ├── client/          # React frontend (Vite)
 ├── server/          # Express.js backend
+├── cnn_model/       # Python CNN model for plant disease detection
+├── Crop_Recommendation/  # Python Flask app for crop recommendations
 └── README.md
 ```
 

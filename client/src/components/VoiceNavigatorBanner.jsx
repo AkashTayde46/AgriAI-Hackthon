@@ -97,7 +97,7 @@ const VoiceNavigatorBanner = () => {
             <div className="flex items-center space-x-1">
               <span className="text-lg">🎤</span>
               <span className="font-bold text-sm tracking-wide drop-shadow-sm">
-                Hello AgriAI!
+                Hello KrushiSetu!
               </span>
             </div>
           </div>
@@ -105,7 +105,7 @@ const VoiceNavigatorBanner = () => {
           {/* Description */}
           <p className="text-green-50 text-xs font-medium leading-relaxed mb-3">
             You can also use voice navigation to explore our website. Try saying 
-            <span className="font-semibold text-white mx-1">"Hello AgriAI"</span> 
+            <span className="font-semibold text-white mx-1">"Hello KrushiSetu"</span> 
             to get started!
           </p>
           

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, MapPin, Calendar, Droplets, Thermometer, Shield, AlertCircle, CheckCircle, BarChart3 } from 'lucide-react';
 import DashboardNav from '../components/DashboardNav';
+import { pythonApi } from '../services/pythonApi';
 
 const CropYieldPrediction = () => {
   const [formData, setFormData] = useState({
@@ -23,37 +24,23 @@ const CropYieldPrediction = () => {
 
   // Fetch available crops and areas on component mount
   useEffect(() => {
+    // Add cache-busting parameter to force fresh requests
     fetchCropsAndAreas();
   }, []);
 
   const fetchCropsAndAreas = async () => {
     try {
-      const [cropsResponse, regionsResponse, soilTypesResponse, weatherResponse] = await Promise.all([
-        fetch('http://localhost:5001/crops'),
-        fetch('http://localhost:5001/regions'),
-        fetch('http://localhost:5001/soil-types'),
-        fetch('http://localhost:5001/weather-conditions')
+      const [crops, regions, soilTypes, weatherConditions] = await Promise.all([
+        pythonApi.getCrops(),
+        pythonApi.getRegions(),
+        pythonApi.getSoilTypes(),
+        pythonApi.getWeatherConditions()
       ]);
       
-      if (cropsResponse.ok) {
-        const cropsData = await cropsResponse.json();
-        setCrops(cropsData.crops);
-      }
-      
-      if (regionsResponse.ok) {
-        const regionsData = await regionsResponse.json();
-        setRegions(regionsData.regions);
-      }
-      
-      if (soilTypesResponse.ok) {
-        const soilTypesData = await soilTypesResponse.json();
-        setSoilTypes(soilTypesData.soil_types);
-      }
-      
-      if (weatherResponse.ok) {
-        const weatherData = await weatherResponse.json();
-        setWeatherConditions(weatherData.weather_conditions);
-      }
+      setCrops(crops);
+      setRegions(regions);
+      setSoilTypes(soilTypes);
+      setWeatherConditions(weatherConditions);
     } catch (err) {
       console.error('Error fetching data:', err);
     }
@@ -74,20 +61,7 @@ const CropYieldPrediction = () => {
     setPrediction(null);
 
     try {
-      const response = await fetch('http://localhost:5001/predict', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = await pythonApi.predictCropYield(formData);
       setPrediction(data);
     } catch (err) {
       setError(err.message);

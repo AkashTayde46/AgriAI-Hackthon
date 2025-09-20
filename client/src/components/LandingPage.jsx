@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { BadgeDollarSign, Menu, X, User, LogOut } from 'lucide-react'
+import { TreePine, Menu, X, User, LogOut } from 'lucide-react'
 import HeroSection from './HeroSection'
 import FeaturesSection from './FeaturesSection'
 import HowItWorksSection from './HowItWorksSection'
@@ -75,8 +75,8 @@ function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
           {/* Left: Logo */}
           <a href="/" className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-green-50 transition duration-200">
-            <BadgeDollarSign className="h-8 w-8 text-green-600" />
-            <span className="ml-2 text-xl font-extrabold text-green-800 tracking-tight drop-shadow">AgriAI</span>
+            <TreePine className="h-8 w-8 text-green-600" />
+            <span className="ml-2 text-xl font-extrabold text-green-800 tracking-tight drop-shadow">KrushiSetu</span>
           </a>
           
           {/* Hamburger Button */}

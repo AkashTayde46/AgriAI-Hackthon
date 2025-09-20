@@ -11,7 +11,7 @@ const About = () => {
   });
 
   return (
-    <div className='about'>
+    <div id="about" className='about'>
       <div className="about-left" ref={videoRef}>
         <div className={`video-container ${isInView ? 'video-active' : ''}`}>
           <iframe

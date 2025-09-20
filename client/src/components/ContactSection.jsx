@@ -86,7 +86,7 @@ const ContactSection = () => {
 
             {/* Additional Info */}
             <div className="bg-green-50 rounded-xl p-6">
-              <h4 className="font-semibold text-gray-900 mb-3">Why Choose AgriAI?</h4>
+              <h4 className="font-semibold text-gray-900 mb-3">Why Choose KrushiSetu?</h4>
               <ul className="space-y-2 text-sm text-gray-600">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-500" />
