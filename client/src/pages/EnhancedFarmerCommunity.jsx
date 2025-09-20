@@ -54,6 +54,8 @@ const EnhancedFarmerCommunity = () => {
   const [error, setError] = useState(null);
   const [socketConnected, setSocketConnected] = useState(false);
   const [buttonLoading, setButtonLoading] = useState({});
+  const [chatOpening, setChatOpening] = useState(false);
+  const [currentRoomId, setCurrentRoomId] = useState(null);
   const messagesEndRef = useRef(null);
   const socketRef = useRef(null);
 
@@ -78,24 +80,39 @@ const EnhancedFarmerCommunity = () => {
         socketRef.current.disconnect();
       }
     };
-  }, []);
+  }, []); // Remove dependencies to prevent re-initialization
 
   useEffect(() => {
     if (activeCommunity) {
+      console.log('Active community changed, fetching messages for:', activeCommunity._id);
       fetchMessages(activeCommunity._id);
       
-      // Join community room for real-time messaging
-      if (socket && socket.connected) {
-        socket.emit('joinCommunityRoom', activeCommunity._id);
+      // Only join community room if we're not already in it
+      if (currentRoomId !== activeCommunity._id) {
+        if (socket && socket.connected) {
+          console.log('Joining community room:', activeCommunity._id);
+          socket.emit('joinCommunityRoom', activeCommunity._id);
+          setCurrentRoomId(activeCommunity._id);
+        } else {
+          console.log('Socket not connected when trying to join community room');
+          // Try to connect socket
+          if (socket) {
+            socket.connect();
+          }
+        }
+      } else {
+        console.log('Already in this community room:', activeCommunity._id);
       }
     } else {
+      console.log('No active community, leaving any community room');
+      setCurrentRoomId(null);
       // Leave any community room when no active community
       if (socket && socket.connected) {
         // Note: We don't have a specific leaveCommunityRoom event, 
         // but the socket will automatically leave when disconnected
       }
     }
-  }, [activeCommunity]);
+  }, [activeCommunity, currentRoomId, socket]); // Add currentRoomId to dependencies
 
   useEffect(() => {
     scrollToBottom();
@@ -125,10 +142,12 @@ const EnhancedFarmerCommunity = () => {
       console.log('Connected to server');
       setSocketConnected(true);
       if (user?._id) {
+        console.log('Joining user room:', user._id);
         socket.emit('joinUserRoom', user._id);
       }
       // Join community room if we have an active community
       if (activeCommunity) {
+        console.log('Reconnecting to community room:', activeCommunity._id);
         socket.emit('joinCommunityRoom', activeCommunity._id);
       }
     };
@@ -138,18 +157,31 @@ const EnhancedFarmerCommunity = () => {
       setSocketConnected(false);
     };
 
+    // Listen for community room join confirmation
+    const handleJoinedCommunityRoom = (data) => {
+      console.log('Successfully joined community room:', data);
+    };
+
+    // Remove existing listeners first to prevent duplicates
+    socket.off('connect', handleConnect);
+    socket.off('disconnect', handleDisconnect);
+    socket.off('newMessage', handleNewMessage);
+    socket.off('joinedCommunityRoom', handleJoinedCommunityRoom);
+
     // Add event listeners
     socket.on('connect', handleConnect);
     socket.on('disconnect', handleDisconnect);
     socket.on('newMessage', handleNewMessage);
+    socket.on('joinedCommunityRoom', handleJoinedCommunityRoom);
 
     // Cleanup on unmount
     return () => {
       socket.off('connect', handleConnect);
       socket.off('disconnect', handleDisconnect);
       socket.off('newMessage', handleNewMessage);
+      socket.off('joinedCommunityRoom', handleJoinedCommunityRoom);
     };
-  }, [user?._id, activeCommunity]);
+  }, [user?._id, activeCommunity, socket]); // Keep socket in dependencies but handle duplicates
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -157,8 +189,11 @@ const EnhancedFarmerCommunity = () => {
 
   const initializeSocket = () => {
     // Socket auto-connects, just join user room for notifications
-    if (user?._id && socket.connected) {
+    if (user?._id && socket && socket.connected) {
+      console.log("Joining user room on initialization:", user._id);
       socket.emit('joinUserRoom', user._id);
+    } else if (user?._id && socket) {
+      console.log("Socket not connected, will join user room when connected");
     }
     
     console.log("Socket connection initialized");
@@ -188,10 +223,13 @@ const EnhancedFarmerCommunity = () => {
 
   const fetchMessages = async (communityId) => {
     try {
+      console.log('Fetching messages for community:', communityId);
       const response = await api.get(`/communities/${communityId}/messages`);
+      console.log('Messages fetched:', response.data);
       setMessages(response.data);
     } catch (error) {
       console.error("Error fetching messages:", error);
+      setError("Failed to load messages");
     }
   };
 
@@ -322,19 +360,44 @@ const EnhancedFarmerCommunity = () => {
     }
   };
 
-  const joinCommunity = useCallback((community) => {
-    setActiveCommunity(community);
+  const joinCommunity = useCallback(async (community) => {
+    console.log('Joining community:', community);
+    setChatOpening(true);
+    
+    try {
+      // Set active community first
+      setActiveCommunity(community);
+      
+      // Small delay to ensure state is updated
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // The socket room joining will be handled by the useEffect when activeCommunity changes
+      // No need to manually emit here to prevent duplicates
+      console.log('Chat should now be open for community:', community._id);
+    } finally {
+      setChatOpening(false);
+    }
   }, []);
 
   const handleButtonClick = useCallback(async (buttonId, action) => {
-    if (buttonLoading[buttonId]) return; // Prevent multiple clicks
+    if (buttonLoading[buttonId]) {
+      console.log('Button already loading, ignoring click');
+      return; // Prevent multiple clicks
+    }
     
+    console.log('Button click started:', buttonId);
     setButtonLoading(prev => ({ ...prev, [buttonId]: true }));
     
     try {
       await action();
+      console.log('Button action completed:', buttonId);
+    } catch (error) {
+      console.error('Button action failed:', buttonId, error);
     } finally {
-      setButtonLoading(prev => ({ ...prev, [buttonId]: false }));
+      // Add a small delay before resetting loading state
+      setTimeout(() => {
+        setButtonLoading(prev => ({ ...prev, [buttonId]: false }));
+      }, 500);
     }
   }, [buttonLoading]);
 
@@ -445,7 +508,12 @@ const EnhancedFarmerCommunity = () => {
                   className="primary-action flex-1 sm:flex-none px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium flex items-center justify-center space-x-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                 >
                   <MessageCircle className="h-4 w-4" />
-                  <span>{buttonLoading[`join-${community._id}`] ? 'Opening...' : 'Open Chat'}</span>
+                  <span>
+                    {buttonLoading[`join-${community._id}`] ? 
+                      (chatOpening ? 'Opening Chat...' : 'Opening...') : 
+                      'Open Chat'
+                    }
+                  </span>
                 </button>
                 
                 {/* Secondary Actions - Management */}
@@ -493,7 +561,12 @@ const EnhancedFarmerCommunity = () => {
                   className="flex-1 sm:flex-none px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium flex items-center justify-center space-x-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                 >
                   <MessageCircle className="h-4 w-4" />
-                  <span>{buttonLoading[`join-${community._id}`] ? 'Opening...' : 'Open Chat'}</span>
+                  <span>
+                    {buttonLoading[`join-${community._id}`] ? 
+                      (chatOpening ? 'Opening Chat...' : 'Opening...') : 
+                      'Open Chat'
+                    }
+                  </span>
                 </button>
                 <button
                   onClick={() => handleButtonClick(`leave-${community._id}`, () => leaveCommunity(community._id))}

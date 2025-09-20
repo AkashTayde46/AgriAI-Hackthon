@@ -9,6 +9,7 @@ import Campus from './Campus/Campus';
 import Testimonials from './Testimonials/Testimonials';
 import Contact from './Contact/Contact';
 import Footer from './Footer/Footer';
+import FloatingChatButton from '../components/FloatingChatButton';
 import useScrollVideoPlay from '../hooks/useScrollVideoPlay';
 
 
@@ -294,6 +295,9 @@ const LandingPage = () => {
       <Footer/>
       
       </div>
+      
+      {/* AI Farming Assistant Chat */}
+      <FloatingChatButton />
       
     </div>
   )

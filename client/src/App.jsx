@@ -18,12 +18,9 @@ import ErrorPage from './components/ErrorPage'
 import FeaturePlaceholder from './pages/FeaturePlaceholder'
 import ProtectedRoute from './components/ProtectedRoute'
 import EnhancedFarmerCommunity from './pages/EnhancedFarmerCommunity.jsx'
-<<<<<<< HEAD
-=======
 import ExpertConsultationPage from './pages/ExpertConsultationPage.jsx'
 import SmartHealthDiagnostics from './pages/SmartHealthDiagnostics'
 import CropYieldPrediction from './pages/CropYieldPrediction'
->>>>>>> 3df0d3de4f891225496d7507b3f6493d06fb5a20
 // Auth Provider
 import { AuthProvider } from './Authorisation/AuthProvider.jsx'
 import ExpertConsultation from './pages/ExpertConsultationPage.jsx'
@@ -86,43 +83,22 @@ function App() {
               <ProtectedRoute>
                 <Weather />
               </ProtectedRoute>
-            } />
-<<<<<<< HEAD
-             <Route path="/experts" element={
-              <ProtectedRoute>
-                <ExpertConsultation />
-              </ProtectedRoute>
-            } />
-            <Route path="/market" element={
-=======
-            <Route path="/yield-prediction" element={
->>>>>>> 3df0d3de4f891225496d7507b3f6493d06fb5a20
-              <ProtectedRoute>
-                <CropYieldPrediction />
-              </ProtectedRoute>
-            } />
-            <Route path="/finance" element={
-              <ProtectedRoute>
-                <FeaturePlaceholder 
-                  featureName="Financial Management" 
-                  description="Farm accounting, ROI calculator, and loan applications"
-                />
-              </ProtectedRoute>
-            } />
-            <Route path="/community" element={
-              <ProtectedRoute>
-                <EnhancedFarmerCommunity />
-              </ProtectedRoute>
-            } />
-<<<<<<< HEAD
-            
-=======
-            <Route path="/experts" element={
-              <ProtectedRoute>
-                <ExpertConsultationPage />
-              </ProtectedRoute>
-            } />
->>>>>>> 3df0d3de4f891225496d7507b3f6493d06fb5a20
+} />
+<Route path="/experts" element={
+  <ProtectedRoute>
+    <ExpertConsultationPage />
+  </ProtectedRoute>
+} />
+<Route path="/yield-prediction" element={
+  <ProtectedRoute>
+    <CropYieldPrediction />
+  </ProtectedRoute>
+} />
+<Route path="/community" element={
+  <ProtectedRoute>
+    <EnhancedFarmerCommunity />
+  </ProtectedRoute>
+} />
             <Route path="/learning" element={
               <ProtectedRoute>
                 <FeaturePlaceholder 

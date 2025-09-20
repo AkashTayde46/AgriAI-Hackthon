@@ -105,3 +105,7 @@ consultationSchema.set('toJSON', { virtuals: true });
 
 module.exports = mongoose.model("Consultation", consultationSchema);
 
+
+
+
+
