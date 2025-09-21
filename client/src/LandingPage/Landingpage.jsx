@@ -10,6 +10,9 @@ import Testimonials from './Testimonials/Testimonials';
 import Contact from './Contact/Contact';
 import Footer from './Footer/Footer';
 import FloatingChatButton from '../components/FloatingChatButton';
+import VoiceNavigator from '../components/VoiceNavigator';
+import SimpleVoiceTest from '../components/SimpleVoiceTest';
+import VisualTest from '../components/VisualTest';
 import useScrollVideoPlay from '../hooks/useScrollVideoPlay';
 
 
@@ -117,139 +120,139 @@ const LandingPage = () => {
 
      <LandingPageCards items={[
        {
-         title: "Financial Advisor - Chatbot",
-         description: "Get personalized financial advice from our AI-powered chatbot",
+         title: "AI Farming Assistant",
+         description: "Get personalized agricultural advice from our AI-powered chatbot",
          features: [
            "24/7 AI-powered assistance",
-           "Personalized investment advice",
-           "Risk assessment & planning",
-           "Real-time market insights"
+           "Crop recommendations",
+           "Disease diagnosis & treatment",
+           "Weather-based farming advice"
          ],
-         benefits: "Save time and get expert financial guidance anytime, anywhere",
+         benefits: "Save time and get expert farming guidance anytime, anywhere",
          link: "/advisor",
          icon: Bot,
        },
        {
-         title: "Business Opportunities",
-         description: "Explore business opportunities in India",
+         title: "Crop Disease Detection",
+         description: "AI-powered plant disease detection and treatment recommendations",
          features: [
-           "Rural business ideas",
-           "Government schemes info",
-           "Market analysis reports",
-           "Success story examples"
+           "Image-based disease diagnosis",
+           "Treatment recommendations",
+           "Prevention strategies",
+           "Expert consultation"
          ],
-         benefits: "Discover profitable ventures and government support for entrepreneurs",
-         link: "/rural",
+         benefits: "Detect and treat plant diseases early to maximize crop yield",
+         link: "/plant-disease",
          icon: Briefcase,
        },
        {
-         title: "Schemes & Benefits",
-         description: "View and manage detailed government schemes and benefits",
+         title: "Government Schemes",
+         description: "Access agricultural government schemes and benefits",
          features: [
-           "Central government schemes",
-           "State-specific benefits",
-           "Application procedures",
-           "Eligibility criteria"
+           "Agricultural subsidies",
+           "Crop insurance schemes",
+           "Loan facilities",
+           "Training programs"
          ],
-         benefits: "Access comprehensive information about government financial support",
+         benefits: "Access comprehensive information about government agricultural support",
          link: "/scheme",
          icon: Shield,
        },
        {
-         title: "Community",
-         description: "Join the community to discuss and share ideas with other users",
+         title: "Farmer Community",
+         description: "Join the farming community to discuss and share agricultural knowledge",
          features: [
            "Discussion forums",
            "Expert Q&A sessions",
            "Peer networking",
            "Knowledge sharing"
          ],
-         benefits: "Connect with like-minded individuals and financial experts",
+         benefits: "Connect with fellow farmers and agricultural experts",
          link: "/community",
          icon: Users,
        },
        {
-         title: "QnA Sessions",
-         description: "Participate in live QnA sessions with financial experts",
+         title: "Expert Q&A Sessions",
+         description: "Participate in live QnA sessions with agricultural experts",
          features: [
            "Live expert sessions",
            "Interactive discussions",
            "Topic-specific Q&A",
            "Recorded sessions"
          ],
-         benefits: "Get direct answers from certified financial professionals",
+         benefits: "Get direct answers from certified agricultural professionals",
          link: "/qna",
          icon: GraduationCap,
        },
        {
-         title: "Success Stories",
-         description: "Read inspiring stories of individuals who have overcome adversity",
+         title: "Farmer Success Stories",
+         description: "Read inspiring stories of farmers who have achieved success",
          features: [
            "Real-life case studies",
            "Step-by-step journeys",
            "Lessons learned",
            "Motivational content"
          ],
-         benefits: "Learn from real experiences and find motivation for your journey",
+         benefits: "Learn from real farming experiences and find motivation for your agricultural journey",
          link: "/stories",
          icon: Award,
        },
        {
-         title: "OCR Based Finance Doc Reading",
-         description: "Scan and understand financial documents with AI-powered OCR",
+         title: "Smart Crop Analysis",
+         description: "Analyze crop health and growth with AI-powered image processing",
          features: [
-           "Document scanning",
-           "Text extraction",
-           "Data analysis",
+           "Image scanning",
+           "Health assessment",
+           "Growth analysis",
            "Report generation"
          ],
-         benefits: "Digitize and analyze financial documents instantly",
-         link: "/ocr",
+         benefits: "Digitize and analyze crop conditions instantly",
+         link: "/crop-analysis",
          icon: FileText,
        },
        {
-         title: "Expense Tracker",
-         description: "Track and manage your daily expenses with smart categorization",
+         title: "Farm Expense Tracker",
+         description: "Track and manage your farm expenses with smart categorization",
          features: [
            "Expense categorization",
            "Budget tracking",
            "Spending insights",
            "Financial reports"
          ],
-         benefits: "Gain control over your spending and improve financial habits",
+         benefits: "Gain control over your farm spending and improve financial habits",
          link: "/expenses",
          icon: Receipt,
        },
        {
-         title: "Financial Scams", 
-         description: "Learn financial scams through interactive visualisations",
+         title: "Agricultural Scams Awareness", 
+         description: "Learn about agricultural scams through interactive visualizations",
          features: [
            "Common scam types",
            "Prevention tips",
            "Interactive examples",
            "Reporting procedures"
          ],
-         benefits: "Protect yourself from financial fraud and scams",
+         benefits: "Protect yourself from agricultural fraud and scams",
          link: "/scams",
          icon: Shield,
        },
        {
-         title: "Fun And Learn", 
-         description: "Learn financial concepts through interactive games and quizzes",
+         title: "Agricultural Learning Games", 
+         description: "Learn agricultural concepts through interactive games and quizzes",
          features: [
            "Educational games",
            "Interactive quizzes",
            "Progress tracking",
            "Rewards system"
          ],
-         benefits: "Make learning finance engaging and enjoyable",
+         benefits: "Make learning agriculture engaging and enjoyable",
          link: "/game",
          icon: BookOpen,
        },
      ]} />
         <section className="py-12 bg-white text-center">
           <h2 className="text-2xl font-bold text-green-800">
-            Success Stories of the Underprivileged
+            Success Stories of Farmers
           </h2>
           <p className="mt-2 text-green-600">Inspiring journeys of overcoming adversity</p>
           <SuccessStoryTimeline steps={[
@@ -298,6 +301,15 @@ const LandingPage = () => {
       
       {/* AI Farming Assistant Chat */}
       <FloatingChatButton />
+      
+      {/* Voice Navigator */}
+      <VoiceNavigator />
+      
+      {/* Simple Voice Test - Debug */}
+      <SimpleVoiceTest />
+      
+      {/* Visual Test - Debug */}
+      <VisualTest />
       
     </div>
   )

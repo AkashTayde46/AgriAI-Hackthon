@@ -26,6 +26,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Serve static files
+app.use('/uploads', express.static('uploads'));
+
 // Session configuration
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-session-secret',
@@ -58,7 +61,7 @@ if (process.env.MONGO_URI) {
 
 // Simple test route
 app.get('/', (req, res) => {
-  res.send('Hello from the AgriAI backend!');
+  res.send('Hello from the KrushiSetu backend!');
 });
 
 // Import routes
@@ -70,6 +73,15 @@ const communityRoutes = require('./routes/communityRoutes');
 const expertRoutes = require('./routes/expertRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 const financialRoutes = require('./routes/financialRoutes');
+const plantDiseaseRoutes = require('./routes/plantDiseaseRoutes');
+const cropRecommendationRoutes = require('./routes/cropRecommendationRoutes');
+const equipmentRoutes = require('./routes/equipmentRoutesSimple');
+const equipmentBookingRoutes = require('./routes/equipmentBookingRoutes');
+const farmerAnalyticsRoutes = require('./routes/farmerAnalyticsRoutes');
+const calendarRoutes = require('./routes/calendarRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const teamRoutes = require('./routes/teamRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 
 // Use API routes
 app.use('/api/auth', authRoutes);
@@ -80,6 +92,15 @@ app.use('/api/communities', communityRoutes);
 app.use('/api/experts', expertRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/financial-advice', financialRoutes);
+app.use('/api/plant-disease', plantDiseaseRoutes);
+app.use('/api/crop-recommendation', cropRecommendationRoutes);
+app.use('/api/equipment', equipmentRoutes);
+app.use('/api/equipment-bookings', equipmentBookingRoutes);
+app.use('/api/farmer-analytics', farmerAnalyticsRoutes);
+app.use('/api/calendar', calendarRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/teams', teamRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // ---------------------- SOCKET.IO SETUP ----------------------
 

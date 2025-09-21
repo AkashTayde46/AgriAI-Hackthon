@@ -123,7 +123,7 @@ const Testimonials = () => {
     };
 
     return (
-        <div className="testimonials-carousel">
+        <div id="testimonials" className="testimonials-carousel">
             <div className="carousel-container">
                 {testimonials.map((testimonial, index) => (
                     <div

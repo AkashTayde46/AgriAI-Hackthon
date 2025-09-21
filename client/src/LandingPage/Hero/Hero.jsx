@@ -6,22 +6,22 @@ import { useNavigate } from "react-router-dom";
 const features = [
   { 
     icon: "chart", 
-    label: "Investment Planning",
+    label: "Crop Planning",
     color: "from-blue-500 to-cyan-500"
   },
   { 
     icon: "shield", 
-    label: "Risk Management",
+    label: "Disease Detection",
     color: "from-teal-500 to-green-500"
   },
   { 
     icon: "graph", 
-    label: "Portfolio Analysis",
+    label: "Yield Analysis",
     color: "from-purple-500 to-pink-500"
   },
   { 
     icon: "target", 
-    label: "Goal Setting",
+    label: "Smart Farming",
     color: "from-orange-500 to-red-500"
   },
 ];
@@ -30,9 +30,9 @@ const Hero = () => {
   const navigate = useNavigate();
   
   // State for counting animations
-  const [totalAssets, setTotalAssets] = useState(0);
-  const [ytdReturn, setYtdReturn] = useState(0);
-  const [clientRating, setClientRating] = useState(0);
+  const [totalFarms, setTotalFarms] = useState(0);
+  const [cropYield, setCropYield] = useState(0);
+  const [farmerRating, setFarmerRating] = useState(0);
   
   // State for typewriter effect
   const [typewriterText, setTypewriterText] = useState("");
@@ -40,7 +40,7 @@ const Hero = () => {
   
   // Typewriter effect for full phrase
   useEffect(() => {
-    const fullText = "Strategic Financial Planning Solutions";
+    const fullText = "Smart Agricultural Solutions for Modern Farmers";
     let currentIndex = 0;
     
     const typeInterval = setInterval(() => {
@@ -91,31 +91,31 @@ const Hero = () => {
   // Counting animation effect
   useEffect(() => {
     const startCounting = () => {
-      // Animate Total Assets from 0 to 127000
-      const assetsInterval = setInterval(() => {
-        setTotalAssets(prev => {
-          if (prev >= 127000) {
-            clearInterval(assetsInterval);
-            return 127000;
+      // Animate Total Farms from 0 to 5000
+      const farmsInterval = setInterval(() => {
+        setTotalFarms(prev => {
+          if (prev >= 5000) {
+            clearInterval(farmsInterval);
+            return 5000;
           }
-          return prev + 1000;
+          return prev + 50;
         });
       }, 20);
       
-      // Animate YTD Return from 0 to 12.4
-      const returnInterval = setInterval(() => {
-        setYtdReturn(prev => {
-          if (prev >= 12.4) {
-            clearInterval(returnInterval);
-            return 12.4;
+      // Animate Crop Yield from 0 to 25.4
+      const yieldInterval = setInterval(() => {
+        setCropYield(prev => {
+          if (prev >= 25.4) {
+            clearInterval(yieldInterval);
+            return 25.4;
           }
           return prev + 0.1;
         });
       }, 50);
       
-      // Animate Client Rating from 0 to 4.9
+      // Animate Farmer Rating from 0 to 4.9
       const ratingInterval = setInterval(() => {
-        setClientRating(prev => {
+        setFarmerRating(prev => {
           if (prev >= 4.9) {
             clearInterval(ratingInterval);
             return 4.9;
@@ -159,7 +159,7 @@ const Hero = () => {
         {/* Professional Badge */}
         <div className="inline-flex items-center px-4 py-2 bg-green-50 border border-green-200 rounded-full mb-6 animate-fade-in-up">
           <div className="w-2 h-2 bg-green-600 rounded-full mr-2 animate-pulse"></div>
-          <span className="text-sm font-medium text-green-700">Trusted by 10,000+ Investors</span>
+          <span className="text-sm font-medium text-green-700">Trusted by 5,000+ Farmers</span>
         </div>
 
         {/* Main Headlines */}
@@ -168,7 +168,7 @@ const Hero = () => {
         </h1>
         
         <p className="text-lg lg:text-xl text-gray-600 mb-8 leading-relaxed animate-fade-in-up animation-delay-200">
-          Transform your financial future with data-driven insights, expert guidance, and comprehensive wealth management strategies tailored to your goals.
+          Transform your farming practices with AI-powered crop recommendations, disease detection, and smart agricultural solutions tailored to your needs.
         </p>
 
         {/* Feature Grid */}
@@ -276,15 +276,15 @@ const Hero = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300">
                   <div className="text-2xl font-bold text-green-600 counting-number">
-                    ${(totalAssets / 1000).toFixed(0)}K
+                    {formatNumber(totalFarms)}+
                   </div>
-                  <div className="text-sm text-gray-600">Total Assets</div>
+                  <div className="text-sm text-gray-600">Farms Served</div>
                 </div>
                 <div className="text-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300">
                   <div className="text-2xl font-bold text-green-600 counting-number">
-                    +{ytdReturn.toFixed(1)}%
+                    +{cropYield.toFixed(1)}%
                   </div>
-                  <div className="text-sm text-gray-600">YTD Return</div>
+                  <div className="text-sm text-gray-600">Yield Increase</div>
                 </div>
               </div>
             </div>
@@ -301,9 +301,9 @@ const Hero = () => {
           <div className="floating-card absolute -bottom-4 -left-4 bg-white rounded-lg shadow-lg border border-gray-200 p-4 animate-float animation-delay-1000">
             <div className="text-center">
               <div className="text-lg font-bold text-green-600 counting-number">
-                {clientRating.toFixed(1)}/5
+                {farmerRating.toFixed(1)}/5
               </div>
-              <div className="text-xs text-gray-600">Client Rating</div>
+              <div className="text-xs text-gray-600">Farmer Rating</div>
             </div>
           </div>
         </div>

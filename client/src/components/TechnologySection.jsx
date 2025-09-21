@@ -30,7 +30,8 @@ const TechnologySection = () => {
       description: 'Native iOS and Android apps',
       color: 'from-purple-500 to-pink-500',
       bgColor: 'bg-purple-50',
-      textColor: 'text-purple-600'
+      textColor: 'text-purple-600',
+      onClick: null
     },
     { 
       name: 'Web Platform', 
@@ -38,7 +39,8 @@ const TechnologySection = () => {
       description: 'Access from any browser',
       color: 'from-blue-500 to-cyan-500',
       bgColor: 'bg-blue-50',
-      textColor: 'text-blue-600'
+      textColor: 'text-blue-600',
+      onClick: null
     },
     { 
       name: 'WhatsApp', 
@@ -46,7 +48,12 @@ const TechnologySection = () => {
       description: 'Chat directly on WhatsApp',
       color: 'from-green-500 to-emerald-500',
       bgColor: 'bg-green-50',
-      textColor: 'text-green-600'
+      textColor: 'text-green-600',
+      onClick: () => {
+        const phoneNumber = '+14155238886'; // Remove spaces and special characters
+        const whatsappUrl = `https://wa.me/${phoneNumber.replace(/[^\d]/g, '')}`;
+        window.location.href = whatsappUrl;
+      }
     },
     { 
       name: 'IVR System', 
@@ -54,7 +61,8 @@ const TechnologySection = () => {
       description: 'Voice calls for offline access',
       color: 'from-orange-500 to-red-500',
       bgColor: 'bg-orange-50',
-      textColor: 'text-orange-600'
+      textColor: 'text-orange-600',
+      onClick: null
     }
   ];
 
@@ -197,13 +205,19 @@ const TechnologySection = () => {
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-gray-900 mb-4">Available on All Platforms</h3>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Access AgriAI wherever you are, on any device, through multiple channels.
+              Access KrushiSetu wherever you are, on any device, through multiple channels.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {platforms.map((platform, index) => (
-              <div key={index} className="group text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:-translate-y-2">
+              <div 
+                key={index} 
+                className={`group text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:-translate-y-2 ${
+                  platform.onClick ? 'cursor-pointer' : ''
+                }`}
+                onClick={platform.onClick || undefined}
+              >
                 {/* Icon Container */}
                 <div className={`w-16 h-16 bg-gradient-to-r ${platform.color} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                   <div className="text-white">

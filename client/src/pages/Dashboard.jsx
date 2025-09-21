@@ -10,7 +10,8 @@ import {
   Receipt,
   BadgeDollarSign,
   User,
-  TrendingUp
+  TrendingUp,
+  Leaf
 } from 'lucide-react';
 import DashboardNav from '../components/DashboardNav';
 
@@ -33,7 +34,7 @@ const Dashboard = () => {
     {
       title: "AI Crop Advisor",
       description: "Get personalized crop recommendations and disease diagnosis using AI",
-      link: "https://31177169123506864a.gradio.live",
+      link: "https://huggingface.co/spaces/ash1sh08/Agri_bot",
       icon: Bot,
     },
     {
@@ -55,9 +56,15 @@ const Dashboard = () => {
       icon: TrendingUp,
     },
     {
-      title: "Financial Management",
-      description: "Farm accounting, ROI calculator, and loan applications",
-      link: "/finance",
+      title: "Plant Disease Detection",
+      description: "AI-powered plant disease diagnosis with treatment recommendations",
+      link: "/plant-disease",
+      icon: Leaf,
+    },
+    {
+      title: "Equipment Sharing",
+      description: "Rent and share agricultural equipment with other farmers in your community",
+      link: "/equipment-sharing",
       icon: Calculator,
     },
     {
@@ -85,9 +92,9 @@ const Dashboard = () => {
       icon: User,
     },
     {
-      title: "Farm Analytics",
-      description: "Performance dashboard, yield tracking, and benchmarking",
-      link: "/analytics",
+      title: "Farmer Analytics",
+      description: "Comprehensive agricultural data analysis and insights",
+      link: "/farmer-analytics",
       icon: Map,
     },
    

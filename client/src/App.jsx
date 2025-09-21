@@ -21,6 +21,10 @@ import EnhancedFarmerCommunity from './pages/EnhancedFarmerCommunity.jsx'
 import ExpertConsultationPage from './pages/ExpertConsultationPage.jsx'
 import SmartHealthDiagnostics from './pages/SmartHealthDiagnostics'
 import CropYieldPrediction from './pages/CropYieldPrediction'
+import PlantDiseasePage from './pages/PlantDiseasePage'
+import EquipmentSharingPage from './pages/EquipmentSharingPage'
+import FarmerAnalyticsPage from './pages/FarmerAnalyticsPage'
+import AgriculturalCalendarPage from './pages/AgriculturalCalendarPage'
 // Auth Provider
 import { AuthProvider } from './Authorisation/AuthProvider.jsx'
 import ExpertConsultation from './pages/ExpertConsultationPage.jsx'
@@ -83,22 +87,50 @@ function App() {
               <ProtectedRoute>
                 <Weather />
               </ProtectedRoute>
-} />
-<Route path="/experts" element={
-  <ProtectedRoute>
-    <ExpertConsultationPage />
-  </ProtectedRoute>
-} />
-<Route path="/yield-prediction" element={
-  <ProtectedRoute>
-    <CropYieldPrediction />
-  </ProtectedRoute>
-} />
-<Route path="/community" element={
-  <ProtectedRoute>
-    <EnhancedFarmerCommunity />
-  </ProtectedRoute>
-} />
+            } />
+            <Route path="/yield-prediction" element={
+              <ProtectedRoute>
+                <CropYieldPrediction />
+              </ProtectedRoute>
+            } />
+            <Route path="/plant-disease" element={
+              <ProtectedRoute>
+                <PlantDiseasePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/equipment-sharing" element={
+              <ProtectedRoute>
+                <EquipmentSharingPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/farmer-analytics" element={
+              <ProtectedRoute>
+                <FarmerAnalyticsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/calendar" element={
+              <ProtectedRoute>
+                <AgriculturalCalendarPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/finance" element={
+              <ProtectedRoute>
+                <FeaturePlaceholder 
+                  featureName="Financial Management" 
+                  description="Farm accounting, ROI calculator, and loan applications"
+                />
+              </ProtectedRoute>
+            } />
+            <Route path="/community" element={
+              <ProtectedRoute>
+                <EnhancedFarmerCommunity />
+              </ProtectedRoute>
+            } />
+            <Route path="/experts" element={
+              <ProtectedRoute>
+                <ExpertConsultationPage />
+              </ProtectedRoute>
+            } />
             <Route path="/learning" element={
               <ProtectedRoute>
                 <FeaturePlaceholder 
