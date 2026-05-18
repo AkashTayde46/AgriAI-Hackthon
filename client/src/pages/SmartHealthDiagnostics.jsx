@@ -11,9 +11,7 @@ const SmartHealthDiagnostics = () => {
     temperature: '',
     humidity: '',
     ph: '',
-    rainfall: '',
-    ph_category: 'Neutral',
-    rainfall_level: 'Medium'
+    rainfall: ''
   });
   
   const [prediction, setPrediction] = useState(null);
@@ -55,9 +53,7 @@ const SmartHealthDiagnostics = () => {
       temperature: '',
       humidity: '',
       ph: '',
-      rainfall: '',
-      ph_category: 'Neutral',
-      rainfall_level: 'Medium'
+      rainfall: ''
     });
     setPrediction(null);
     setError(null);
@@ -210,40 +206,7 @@ const SmartHealthDiagnostics = () => {
                 </div>
 
                 {/* Categorical Data */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      pH Category
-                    </label>
-                    <select
-                      name="ph_category"
-                      value={formData.ph_category}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    >
-                      {phOptions.map(option => (
-                        <option key={option} value={option}>{option}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Rainfall Level
-                    </label>
-                    <select
-                      name="rainfall_level"
-                      value={formData.rainfall_level}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    >
-                      {rainfallOptions.map(option => (
-                        <option key={option} value={option}>{option}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+                
 
                 {/* Action Buttons */}
                 <div className="flex gap-4 pt-4">
